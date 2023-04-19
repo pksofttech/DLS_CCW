@@ -15,3 +15,26 @@
 2023-04-19 10:45:22,761 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x90] b'\x00\x01\x00'
 2023-04-19 10:45:22,762 INFO gmqtt.mqtt.handler MainThread : [SUBACK] 1 (0,)
 2023-04-19 10:45:22,763 DEBUG gmqtt.mqtt.utils MainThread : FREE MID: 1
+2023-04-19 10:45:27,725 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:32,725 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:37,727 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:42,727 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:47,728 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:52,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:45:57,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:02,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:07,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:12,730 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:17,732 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:22,721 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xd0] b''
+2023-04-19 10:46:22,722 DEBUG gmqtt.mqtt.handler MainThread : [PONG REQUEST] 0xd0 b''
+2023-04-19 10:46:22,733 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:27,734 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:32,734 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:37,735 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:42,737 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:47,738 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:52,739 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:46:57,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:02,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:07,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
