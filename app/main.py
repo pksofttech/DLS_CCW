@@ -20,11 +20,11 @@ from app.core import database
 from app.core import auth
 from app.routes import model_view, views, websocket
 
-root_logger = logging.getLogger()
-root_logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler("applog.log", "w", "utf-8")
-handler.setFormatter(logging.Formatter(f"%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s"))
-root_logger.addHandler(handler)
+# root_logger = logging.getLogger()
+# root_logger.setLevel(logging.DEBUG)
+# handler = logging.FileHandler("applog.log", "w", "utf-8")
+# handler.setFormatter(logging.Formatter(f"%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s"))
+# root_logger.addHandler(handler)
 
 app = FastAPI()
 
