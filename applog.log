@@ -6,3 +6,12 @@
 2023-04-19 11:48:04,918 DEBUG gmqtt.mqtt.protocol MainThread : [RECV EMPTY] Connection will be reset automatically.
 2023-04-19 11:48:04,921 INFO gmqtt.mqtt.protocol MainThread : [CONN CLOSE NORMALLY]
 2023-04-19 11:48:04,921 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xe0] b''
+2023-04-19 11:48:10,960 INFO gmqtt.mqtt.protocol MainThread : [CONNECTION MADE]
+2023-04-19 11:48:10,997 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x20] b'\x00\x00'
+2023-04-19 11:48:10,998 DEBUG gmqtt.mqtt.handler MainThread : [CONNACK] flags: 0x0, result: 0x0
+2023-04-19 11:48:10,999 DEBUG gmqtt.mqtt.utils MainThread : NEW ID: 1
+2023-04-19 11:48:10,999 INFO gmqtt.mqtt.package MainThread : [SEND SUB] 1 [b'DLS/HB']
+2023-04-19 11:48:11,001 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:48:11,037 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x90] b'\x00\x01\x00'
+2023-04-19 11:48:11,038 INFO gmqtt.mqtt.handler MainThread : [SUBACK] 1 (0,)
+2023-04-19 11:48:11,039 DEBUG gmqtt.mqtt.utils MainThread : FREE MID: 1
