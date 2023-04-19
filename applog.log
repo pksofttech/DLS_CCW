@@ -1,51 +1,18 @@
-2023-04-19 10:45:16,540 INFO gmqtt.mqtt.protocol MainThread : [CONNECTION MADE]
-2023-04-19 10:45:16,580 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x20] b'\x00\x01'
-2023-04-19 10:45:16,580 WARNING gmqtt.mqtt.handler MainThread : [CONNACK] 0x1
-2023-04-19 10:45:16,581 INFO gmqtt.mqtt.handler MainThread : [CONNACK] Downgrading to MQTT 3.1 protocol version
-2023-04-19 10:45:16,582 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:16,642 DEBUG gmqtt.mqtt.protocol MainThread : [RECV EMPTY] Connection will be reset automatically.
-2023-04-19 10:45:16,644 INFO gmqtt.mqtt.protocol MainThread : [CONN CLOSE NORMALLY]
-2023-04-19 10:45:16,644 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xe0] b''
-2023-04-19 10:45:22,683 INFO gmqtt.mqtt.protocol MainThread : [CONNECTION MADE]
-2023-04-19 10:45:22,720 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x20] b'\x00\x00'
-2023-04-19 10:45:22,721 DEBUG gmqtt.mqtt.handler MainThread : [CONNACK] flags: 0x0, result: 0x0
-2023-04-19 10:45:22,722 DEBUG gmqtt.mqtt.utils MainThread : NEW ID: 1
-2023-04-19 10:45:22,723 INFO gmqtt.mqtt.package MainThread : [SEND SUB] 1 [b'DLS/HB']
-2023-04-19 10:45:22,725 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:22,761 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x90] b'\x00\x01\x00'
-2023-04-19 10:45:22,762 INFO gmqtt.mqtt.handler MainThread : [SUBACK] 1 (0,)
-2023-04-19 10:45:22,763 DEBUG gmqtt.mqtt.utils MainThread : FREE MID: 1
-2023-04-19 10:45:27,725 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:32,725 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:37,727 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:42,727 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:47,728 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:52,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:45:57,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:02,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:07,729 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:12,730 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:17,732 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:22,721 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xd0] b''
-2023-04-19 10:46:22,722 DEBUG gmqtt.mqtt.handler MainThread : [PONG REQUEST] 0xd0 b''
-2023-04-19 10:46:22,733 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:27,734 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:32,734 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:37,735 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:42,737 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:47,738 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:52,739 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:46:57,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:02,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:07,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:12,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:17,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:22,722 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xd0] b''
-2023-04-19 10:47:22,722 DEBUG gmqtt.mqtt.handler MainThread : [PONG REQUEST] 0xd0 b''
-2023-04-19 10:47:22,742 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:27,743 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:32,743 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:37,744 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:42,745 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:47,747 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
-2023-04-19 10:47:52,748 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:33:46,955 INFO gmqtt.mqtt.protocol MainThread : [CONNECTION MADE]
+2023-04-19 11:33:46,993 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x20] b'\x00\x01'
+2023-04-19 11:33:46,994 WARNING gmqtt.mqtt.handler MainThread : [CONNACK] 0x1
+2023-04-19 11:33:46,995 INFO gmqtt.mqtt.handler MainThread : [CONNACK] Downgrading to MQTT 3.1 protocol version
+2023-04-19 11:33:46,996 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:33:47,057 DEBUG gmqtt.mqtt.protocol MainThread : [RECV EMPTY] Connection will be reset automatically.
+2023-04-19 11:33:47,059 INFO gmqtt.mqtt.protocol MainThread : [CONN CLOSE NORMALLY]
+2023-04-19 11:33:47,059 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xe0] b''
+2023-04-19 11:33:53,096 INFO gmqtt.mqtt.protocol MainThread : [CONNECTION MADE]
+2023-04-19 11:33:53,131 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x20] b'\x00\x00'
+2023-04-19 11:33:53,132 DEBUG gmqtt.mqtt.handler MainThread : [CONNACK] flags: 0x0, result: 0x0
+2023-04-19 11:33:53,133 DEBUG gmqtt.mqtt.utils MainThread : NEW ID: 1
+2023-04-19 11:33:53,133 INFO gmqtt.mqtt.package MainThread : [SEND SUB] 1 [b'DLS/HB']
+2023-04-19 11:33:53,135 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:33:53,169 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0x90] b'\x00\x01\x00'
+2023-04-19 11:33:53,170 INFO gmqtt.mqtt.handler MainThread : [SUBACK] 1 (0,)
+2023-04-19 11:33:53,172 DEBUG gmqtt.mqtt.utils MainThread : FREE MID: 1
+2023-04-19 11:33:58,137 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
