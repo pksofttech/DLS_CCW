@@ -39,3 +39,13 @@
 2023-04-19 10:47:02,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
 2023-04-19 10:47:07,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
 2023-04-19 10:47:12,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:17,740 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:22,722 DEBUG gmqtt.mqtt.handler MainThread : [CMD 0xd0] b''
+2023-04-19 10:47:22,722 DEBUG gmqtt.mqtt.handler MainThread : [PONG REQUEST] 0xd0 b''
+2023-04-19 10:47:22,742 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:27,743 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:32,743 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:37,744 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:42,745 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:47,747 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 10:47:52,748 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
