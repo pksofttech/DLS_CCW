@@ -48,3 +48,6 @@
 2023-04-19 11:36:08,163 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
 2023-04-19 11:36:13,164 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
 2023-04-19 11:36:18,166 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:36:23,166 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:36:28,168 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
+2023-04-19 11:36:33,168 DEBUG gmqtt.client MainThread : [QoS query IS EMPTY]
