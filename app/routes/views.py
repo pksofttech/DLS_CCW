@@ -27,7 +27,6 @@ from app.service.ksher_pay_sdk import KsherPay
 from ..stdio import *
 from app.core import config
 from app.core.auth import get_user
-from app.service import apiqrpayment, scb_easynet
 import qrcode
 from promptpay import qrcode as promptpay_qrcode
 from app.service.mqtt import fast_mqtt
