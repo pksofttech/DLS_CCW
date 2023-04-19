@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include '_header.html' %}
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed dark-mode">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="wrapper">
+        {% include '_side_bar.html' %}
+        <div class="content-wrapper text-gray-dark">
+            <!-- ? ************************************************ HTML CONTENT ******************************************************** -->
+            <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Status of devices</span>
+                    <span class="info-box-content">
+                        id 1234
+                    </span>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-gear"></i> Setting Device</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                                <label for="customCheckbox1" class="custom-control-label">Custom Checkbox</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked="">
+                                                <label for="customCheckbox2" class="custom-control-label">Custom Checkbox checked</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" type="checkbox" id="customCheckbox3" disabled="">
+                                                <label for="customCheckbox3" class="custom-control-label">Custom Checkbox disabled</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox4" checked="">
+                                                <label for="customCheckbox4" class="custom-control-label">Custom Checkbox with custom color</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-danger custom-control-input-outline" type="checkbox" id="customCheckbox5"
+                                                    checked="">
+                                                <label for="customCheckbox5" class="custom-control-label">Custom Checkbox with custom color outline</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" type="radio" id="customRadio1" name="customRadio">
+                                                <label for="customRadio1" class="custom-control-label">Custom Radio</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" type="radio" id="customRadio2" name="customRadio" checked="">
+                                                <label for="customRadio2" class="custom-control-label">Custom Radio checked</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input" type="radio" id="customRadio3" disabled="">
+                                                <label for="customRadio3" class="custom-control-label">Custom Radio disabled</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio4" name="customRadio2" checked="">
+                                                <label for="customRadio4" class="custom-control-label">Custom Radio with custom color</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input class="custom-control-input custom-control-input-danger custom-control-input-outline" type="radio" id="customRadio5"
+                                                    name="customRadio2">
+                                                <label for="customRadio5" class="custom-control-label">Custom Radio with custom color outline</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <label>Custom Select</label>
+                                            <select class="custom-select">
+                                                <option>option 1</option>
+                                                <option>option 2</option>
+                                                <option>option 3</option>
+                                                <option>option 4</option>
+                                                <option>option 5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Custom Select Disabled</label>
+                                            <select class="custom-select" disabled="">
+                                                <option>option 1</option>
+                                                <option>option 2</option>
+                                                <option>option 3</option>
+                                                <option>option 4</option>
+                                                <option>option 5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <label>Custom Select Multiple</label>
+                                            <select multiple="" class="custom-select">
+                                                <option>option 1</option>
+                                                <option>option 2</option>
+                                                <option>option 3</option>
+                                                <option>option 4</option>
+                                                <option>option 5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Custom Select Multiple Disabled</label>
+                                            <select multiple="" class="custom-select" disabled="">
+                                                <option>option 1</option>
+                                                <option>option 2</option>
+                                                <option>option 3</option>
+                                                <option>option 4</option>
+                                                <option>option 5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                        <label class="custom-control-label" for="customSwitch1">Toggle this custom switch element</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch3">
+                                        <label class="custom-control-label" for="customSwitch3">Toggle this custom switch element with custom colors danger/success</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" disabled="" id="customSwitch2">
+                                        <label class="custom-control-label" for="customSwitch2">Disabled custom switch element</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customRange1">Custom range</label>
+                                    <input type="range" class="custom-range" id="customRange1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customRange2">Custom range (custom-range-danger)</label>
+                                    <input type="range" class="custom-range custom-range-danger" id="customRange2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customRange3">Custom range (custom-range-teal)</label>
+                                    <input type="range" class="custom-range custom-range-teal" id="customRange3">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="customRange4">Custom range <output name="result">.</output></label>
+                                    <input type="range" class="custom-range custom-range-warning" min="1" max="60" value="10" id="customRange4" oninput="result.value = this.value">
+
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-outline-danger btn-block btn-lg"><i class="fa fa-gear"></i> ตั้งค่าระบบ</button>
+                                </div>
+                                <div class="form-group">
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fa fa-circle-info"></i> Device info</h3>
+                        </div>
+
+                        <iframe class="w-100 border rounded-lg border-dark" height="800"
+                            src="https://ccw.devdls.com/d/wQ3db5P4k/dashboard-device?orgId=1&from=1681787467847&to=1681809067847&theme=dark&kiosk" title="description"></iframe>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ? ************************************************************************************************************************ -->
+        </div>
+        {% include '_footer.html' %}
+    </div>
+</body>
+
+{% include '_script.html' %}
+
+<script>
+
+</script>
+
+</html>

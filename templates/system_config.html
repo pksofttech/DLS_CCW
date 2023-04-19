@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	{% include '_header.html' %}
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed bg-gradient-gray-dark dark-mode">
+	<!-- Content Wrapper. Contains page content -->
+	<div class="wrapper">
+		{% include '_side_bar.html' %}
+		<div class="content-wrapper p-4 text-gray-dark">
+
+			<div class="col">
+				<div class="card card-warning">
+					<div class="card-header">
+						<h3 class="card-title">Face recognition DLS Systems</h3>
+
+						<div class="card-tools">
+							<button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+							</button>
+						</div>
+						<!-- /.card-tools -->
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body" style="display: block;">
+						จัดการข้อมูลระบบ
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
+			</div>
+			<div class="col">
+				<div class="card card-primary card-outline card-outline-tabs">
+					<div class="card-header p-0 border-bottom-0">
+						<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link" id="tabs-panel0-tab" data-toggle="pill" onclick="get_systems_user()" href="#tabs-panel0" role="tab" aria-controls="tabs-panel0"
+									aria-selected="false">ผู้ใช้ระบบ</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" id="tabs-panel02-tab" data-toggle="pill" href="#tabs-panel02" role="tab" aria-controls="tabs-panel02"
+									aria-selected="false">About...</a>
+							</li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div class="tab-content" id="custom-tabs-four-tabContent">
+							<div class="tab-pane fade" id="tabs-panel0" role="tabpanel" aria-labelledby="tabs-panel0-tab">
+								<div class="card">
+									<div class="card-header">
+										<h3 class="card-title p-4 ">System User</h3>
+
+										<button type="button" onclick="debug('ADD NEW SYSTEM_USER')" class="btn btn-outline-warning btn-block" data-toggle="modal"
+											data-target="#modal-form-item" data-backdrop="static" data-keyboard="false">
+											<i class="fas fa-user-plus mr-2"></i>เพิ่มผู้ใช้ใหม่</button>
+									</div>
+									<div class="card-body">
+										<table class="table" id="system_user_table">
+
+										</table>
+									</div>
+
+								</div>
+							</div>
+							<div class="tab-pane fade" id="tabs-panel02" role="tabpanel" aria-labelledby="tabs-panel02-tab">
+								<div class="card">
+									<div class="card-body">
+										<div class="">
+											<div class="card mb-2">
+												<img class="card-img-top rounded-lg" src="https://placeimg.com/200/100/tech" alt="About Me">
+												<div class="card-img-overlay d-flex flex-column justify-content-center">
+													<h3 class="card-title text-white mt-5 pt-2">About Me</h3>
+													<p class="card-text pb-2 pt-1 text-white">
+														xxx xxx xxx xxx xxxx, <br>
+														xxx xxx xxx xxx xxxx, <br>
+														xxx xxx xxx xxx xxxx, <br>
+														xxx xxx xxx xxx xxxx, <br>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /.card -->
+				</div>
+			</div>
+
+
+			<!-- ? ***************************************************modal*********************************************************** -->
+			<div class="modal fade" id="modal-form-item" style="display: none;" aria-hidden="true">
+				<div class="modal-dialog modal-xl">
+					<div class="modal-content">
+						<div class="col-md-12">
+							<div class="card card-primary">
+								<div class="card-header">
+									<h3 class="card-title" id="form-modal-title">USER <small>Add new</small></h3>
+								</div>
+
+								<form id="add-new-item-form" action="javascript:submit_form_item('add-new-item-form')">
+									<div class="card-body">
+										<div class="form-group">
+											<label>User Name</label>
+											<input type="text" name="username" value="" class="form-control" placeholder="Enter username" required>
+										</div>
+
+										<div class="form-group">
+											<label>password</label>
+											<input type="password" name="password" value="" class="form-control" placeholder="Enter password" required>
+										</div>
+
+										<div class="form-group text-center">
+
+											<img src="/static/dist/img/img_not_found.png" id="preview-img-of-item" class="img-circle elevation-2" width="128px" height="128px"
+												alt="ไม่มีรูป" />
+
+											<div class="btn btn-info btn-block mt-2">
+												<input type="file" name="image_upload" accept="image/*" onchange="showPreview(event,'preview-img-of-item');" />
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label>Select Type</label>
+										<select class="form-control" name="user_level">
+											<option>member</option>
+											<option>admin</option>
+											<option>root</option>
+
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>Status</label>
+										<select class="form-control" name="status">
+											<option>Enable</option>
+											<option>Disable</option>
+										</select>
+									</div>
+
+
+									<div class="form-group">
+										<label>REMARK</label>
+										<input type="text" name="remark" value="msg" class="form-control" placeholder="Enter remark" required>
+									</div>
+							</div>
+
+							<div class="modal-footer justify-content-between">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-primary">Save changes</button>
+							</div>
+							</form>
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	{% include '_footer.html' %}
+	</div>
+
+</body>
+{% include '_script.html' %}
+
+<script>
+	const API_SYSTEM_USER = "/api/systems_user/"
+	let item_id = 0;
+	async function get_systems_user() {
+		const columns_table = [
+			{
+				data: "id",
+				title: "ID",
+				name: "ID",
+				render: function (data, type) {
+					return String(data).padStart(5, "0");
+				},
+			},
+			{
+				data: "id",
+				title: "จัดการ",
+				orderable: false,
+				render: function (data, type, row) {
+					return `<div class="btn-group btn-group-sm">
+				<a class="btn btn-info" onclick="set_current_item_id(${data})" 
+				data-toggle="modal" data-target="#modal-form-item" data-backdrop="static" data-keyboard="false"><i class="fas fa-user-edit"></i></a>
+				<a class="btn btn-danger" onclick="remove_item(${data})"><i class="far fa-trash-alt"></i></a>
+				</div>`;
+				},
+			},
+			{
+				data: "pictureUrl",
+				title: "pictureUrl",
+				orderable: false,
+				render: function (data) {
+					if (data == "") {
+						return "Not Image"
+					}
+					return `<div class="image">
+								<img src="${data}" class="img-circle elevation-2" width="60" height="60" alt="User Image">
+							</div>`;
+				}
+			},
+			{
+				data: "username",
+				title: "ชื่อสมาชิก",
+			},
+			{
+				data: "createDate",
+				title: "วันลงทะเบียน",
+			},
+			{
+				data: "create_by",
+				title: "create_by",
+			},
+			{
+				data: "status",
+				title: "status",
+			},
+			{
+				data: "user_level",
+				title: "user_level",
+			},
+			{
+				data: "remark",
+				title: "หมายเหตุ",
+				orderable: false,
+			},
+		];
+
+		// debug(columns_table)
+		headers = await get_headers();
+		let system_user_table = $("#system_user_table").DataTable({
+			dom: "Bfrtipl",
+			buttons: [
+				{
+					text: "Word",
+					action: function (e, dt, node, config) {
+						ExportToDoc("system_user_table");
+					},
+				},
+				"csv",
+				"excel",
+				"print",
+				"colvis",
+			],
+			destroy: true,
+			autoWidth: false,
+			pageLength: 10,
+			scrollY: "50vh",
+			scrollCollapse: true,
+			sScrollX: "100%",
+			// "paging": false
+			// data: dataSet,
+			columns: columns_table,
+			order: [[0, "desc"]],
+			processing: true,
+			serverSide: true,
+			search: {
+				return: true,
+			},
+			ajax: {
+				headers: headers,
+				type: "GET",
+				url: `${API_SYSTEM_USER}datatable`,
+				data: function (d) {
+					d.table = "system_user_table";
+				},
+			},
+		});
+	}
+
+	async function set_current_item_id(id = 0) {
+		item_id = id;
+		if (id == 0) {
+			document.getElementById("form-modal-title").innerText = "ADD MODE";
+		} else {
+			document.getElementById("form-modal-title").innerText = "EDIT MODE ID :" + id;
+
+			let _reply = await fetchApi(`${API_SYSTEM_USER}/?id=${id}`, "get", null, "json");
+			if (!!_reply) {
+				if (_reply.id) {
+					const _from_e = document.getElementById("add-new-item-form");
+					for (let i = 0; i < _from_e.elements.length; i++) {
+						let _f_e = _from_e.elements[i];
+						if (_f_e.name != "") {
+							if (_f_e.name == "image_upload") {
+								document.getElementById("preview-img-of-item").src = _reply["pictureUrl"]
+								//debug(document.getElementById("preview-img-of-item").src)
+								continue;
+							}
+							if (_f_e.name == "password") {
+								_f_e.value = "*"
+								continue;
+							}
+							_f_e.value = _reply[_f_e.name]
+						}
+					}
+				} else {
+					debug(_reply)
+					toastMixin.fire({
+						background: bg_mode_theme,
+						title: JSON.stringify(_reply),
+						icon: "error",
+					});
+				}
+			}
+		}
+
+	}
+
+	async function remove_item(id) {
+		if (!(await dialog_confirm())) return;
+
+		let _reply = await fetchApi(`${API_SYSTEM_USER}/${id}`, "delete", null, "json");
+		//debug(_reply);
+		if (!!_reply) {
+			if (_reply.success == true) {
+				Swal.fire({
+					icon: "info",
+					title: "Successful",
+					html: _reply.msg,
+				}).then(() => {
+					window.location.reload();
+				});
+			} else {
+				debug(_reply)
+				toastMixin.fire({
+					background: bg_mode_theme,
+					title: JSON.stringify(_reply),
+					icon: "error",
+				});
+			}
+		}
+	}
+
+	async function submit_form_item(id_form) {
+
+		const _from_e = document.getElementById(id_form);
+		const _api_path = API_SYSTEM_USER;
+		//debug(_from_e.elements.length);
+		const formData = new FormData();
+		if (item_id > 0) {
+			formData.append("id", item_id);
+		}
+		for (let i = 0; i < _from_e.elements.length; i++) {
+			let _f_e = _from_e.elements[i];
+			if (_f_e.name != "") {
+				let k = _f_e.name;
+				let v = _f_e.value;
+
+				if (k == "image_upload" & v != "") {
+
+					formData.append(k, await dataURLtoFile(document.getElementById("preview-img-of-item").src, v));
+					debug("form is already uploaded file")
+					continue;
+				}
+				if (_f_e.name == "password" & _f_e.value == "*") continue;
+				formData.append(k, v);
+
+				//debug("key :" + k + " : " + v);
+
+			}
+		}
+
+		//debug(formData)
+		let _reply = await fetchApi(_api_path, "post", formData, "json");
+		//debug(_reply);
+		if (!!_reply) {
+			if (_reply.success == true) {
+				Swal.fire({
+					icon: "info",
+					title: "Successful",
+					html: _reply.msg,
+				}).then(() => {
+					window.location.reload();
+				});
+			} else {
+				debug(_reply)
+				toastMixin.fire({
+					background: bg_mode_theme,
+					title: JSON.stringify(_reply),
+					icon: "error",
+				});
+			}
+		}
+	}
+
+
+</script>
+
+<script>
+	async function dataURLtoFile(data_url, filename = "img") {
+		if (data_url == "") {
+			return;
+		}
+
+		const blob = await (await fetch(data_url)).blob();
+		return new File([blob], filename);
+	}
+	async function resizeImage(base64Str, w = 600, h = 600) {
+		let img = new Image();
+		img.src = base64Str;
+		let canvas = document.createElement("canvas");
+		const MAX_WIDTH = w;
+		const MAX_HEIGHT = h;
+		await img.decode();
+		let width = img.naturalWidth;
+		let height = img.naturalHeight;
+
+		if ((width < MAX_WIDTH) & (height < MAX_HEIGHT)) {
+			debug("Not resizeImage");
+			return base64Str;
+		}
+		if (width > height) {
+			if (width > MAX_WIDTH) {
+				height *= MAX_WIDTH / width;
+				width = MAX_WIDTH;
+			}
+		} else {
+			if (height > MAX_HEIGHT) {
+				width *= MAX_HEIGHT / height;
+				height = MAX_HEIGHT;
+			}
+		}
+		canvas.width = width;
+		canvas.height = height;
+		let ctx = canvas.getContext("2d");
+		ctx.drawImage(img, 0, 0, width, height);
+		// debug(canvas.toDataURL())
+		debug("resizeImage Image");
+		return canvas.toDataURL();
+	}
+
+	async function showPreview(event, id) {
+		if (event.target.files.length > 0) {
+			const preview = document.getElementById(id);
+			const file = event.target.files[0];
+			const reader = new FileReader();
+			reader.onloadend = async function () {
+
+				preview.src = await resizeImage(reader.result, 128, 128);
+				//print_warn(preview.src)
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+</script>
+
+<script>
+	$(document).ready(function () {
+		$(":input").inputmask();
+		$(function () {
+			$("input,select,textarea").not("[type=submit]").jqBootstrapValidation();
+		});
+
+	});
+</script>
+
+</html>
