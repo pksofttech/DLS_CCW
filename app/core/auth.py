@@ -55,7 +55,6 @@ def authenticate_user(
     username: str,
     password: str,
 ) -> Union[bool, System_User]:
-
     user = get_user(db, username)
     if not user:
         return False
@@ -209,9 +208,10 @@ async def create_systems_user():
             root_user.user_level = "root"
             session.add(root_user)
             session.commit()
-            for i in range(2):
+            user_demo = ["demo", "ccw"]
+            for i in user_demo:
                 _u = System_User()
-                _u.username = f"user_{i}"
+                _u.username = i
                 _u.password = get_password_hash("12341234")
                 # root_user.email = "pksofttech@gmail.com"
                 _reg = time_now().strftime("%Y-%m-%dT%H:%M%z")

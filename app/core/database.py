@@ -6,9 +6,9 @@ from ..stdio import *
 
 # from models import SystemUsers
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///sqlacm.db"
+# SQLALCHEMY_DATABASE_URL = "sqlite:///sqlacm.db"
 # ? connect_args={"check_same_thread": False} For Sqlite เท่านั้น
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+# engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
 # data_base_ip = "localhost"
 # data_base_name = "dpark7"
@@ -22,8 +22,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 # engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # For postgres DB
-# SQLALCHEMY_DATABASE_URL = 'postgresql://root:dls@2021@172.17.0.3/postgres';
-# engine = create_engine(SQLALCHEMY_DATABASE_URL);
+SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@47.254.250.76/ccw"
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base = declarative_base()
@@ -46,6 +46,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 
 # mapper(Car, Table('car', metadata, autoload=True))
 # print_success(F"Table Car: {Car}")
+
 
 # ? MAIN LIB+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 async def create_session() -> Session:
@@ -71,102 +72,41 @@ class System_User(SQLModel, table=True):
     user_level: str
     pictureUrl: str = Field(default="")
     remark: str = Field(default="")
+    projects: List["Project"] = Relationship()
 
-    banks: List["Bank"] = Relationship(back_populates="system_user")
 
-
-class Bank(SQLModel, table=True):
+class Project(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-    pictureUrl: str = Field(default="")
-    logo_enable: bool = Field(default=False)
+    name: str = Field(unique=True)
     createDate: datetime = Field(default=time_now(), nullable=False)
     create_by: str
-    status: str = Field(
-        default="enable",
-    )
-    API_KEY: str
-    API_SECRET: str
-    BILLER_ID: str
-    REF3: str
-    scb_authorize: str = Field(default="https://api-sandbox.partners.scb/partners/sandbox/v2/oauth/authorize")
-    scbGenerateAccessToken: str = Field(default="https://api-sandbox.partners.scb/partners/sandbox/v1/oauth/token")
-    scbQRCodeAPI: str = Field(default="https://api-sandbox.partners.scb/partners/sandbox/v1/payment/qrcode/create")
-    scbCheckPaySuccess: str = Field(default="https://api-sandbox.partners.scb/​partners/​v1/​payment/​billpayment/​inquiry")
-    remark: str
-    bank_type: str
+    # last_login_Date = Column(DateTime)
+
+    status: str = Field(default="")
+    remark: str = Field(default="")
+    owner: int = Field(nullable=False)
     system_user_id: Optional[int] = Field(default=None, foreign_key="system_user.id")
-    system_user: Optional[System_User] = Relationship(back_populates="banks")
-
-    device_qrs: List["Device_Qr"] = Relationship(back_populates="bank")
 
 
-class Device_Qr(SQLModel, table=True):
+class Device(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     sn: str = Field(unique=True)
-    name: str
-    MERCHANT_ID: str
-    REF2: str
     createDate: datetime = Field(default=time_now(), nullable=False)
     create_by: str
-    last_connect: Optional[datetime] = Field(default=time_now())
-    status: str = Field(
-        default="enable",
-    )
+    # last_login_Date = Column(DateTime)
+    service_times: str = Field(default="")
+    price_rates: str = Field(default="")
+    status: str = Field(default="")
     remark: str = Field(default="")
-    last_qr: Optional[str] = Field(default="")
-    last_pay_success: Optional[str] = Field(default="")
-    last_heartbeat: Optional[datetime] = Field(default=time_now())
-    type: str = Field(default="MODULE")
-    profile: str = Field(default="{}")
-    bank_id: Optional[int] = Field(default=None, foreign_key="bank.id")
-    bank: Optional[Bank] = Relationship(back_populates="device_qrs")
-
-    qr_codes: List["Qr_Code"] = Relationship(back_populates="device_qr")
+    system_user_id: int = Field(nullable=False)
 
 
-class Qr_Code(SQLModel, table=True):
+# ******************** Time DB ********************************
+class Log_status(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    REF1: str
-    REF2: str
-    REF3: str
-    amount: int
-    qr_code_data: str
-    createDate: datetime = Field(default=time_now(), nullable=False)
-    status: str = Field(default="created")
-    remark: str = Field(default="")
-
-    device_qr_id: Optional[int] = Field(default=None, foreign_key="device_qr.id")
-    device_qr: Optional[Device_Qr] = Relationship(back_populates="qr_codes")
-
-    qr_code_pays: List["Qr_Code_Pay"] = Relationship(back_populates="qr_code")
-
-
-class Qr_Code_Pay(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    createDate: datetime = Field(default=time_now(), nullable=False)
-    payeeProxyId: str
-    payeeProxyType: str
-    payeeAccountNumber: str
-    payeeName: str
-    payerProxyId: str
-    payerProxyType: str
-    payerAccountNumber: str
-    payerName: str
-    sendingBankCode: str
-    receivingBankCode: str
-    amount: str
-    channelCode: str
-    transactionId: str
-    transactionDateandTime: str
-    billPaymentRef1: str
-    billPaymentRef2: str
-    billPaymentRef3: str
-    currencyCode: str
-    transactionType: str
-
-    qr_code_id: Optional[int] = Field(default=None, foreign_key="qr_code.id")
-    qr_code: Optional[Qr_Code] = Relationship(back_populates="qr_code_pays")
+    time: datetime
+    sn: str = Field(nullable=False)
+    value: str = Field(nullable=False)
 
 
 # with Session(engine) as session:
@@ -181,13 +121,13 @@ SQLModel.metadata.create_all(engine)
 def set_drop_table():
     print_warning("Drop table")
     with Session(engine) as session:
-        table_drop = [Qr_Code_Pay, Qr_Code]
+        table_drop = [System_User, Device, Log_status]
         for _t in table_drop:
             sql = delete(_t)
             print_warning(session.exec(sql))
         session.commit()
 
 
-# set_drop_table()
+set_drop_table()
 
 print_success("import success module database.py")

@@ -20,7 +20,7 @@ from fastapi.responses import (
 import json
 from sqlalchemy.orm import Session
 from sqlmodel import func, join, select, or_
-from app.core.database import Bank, Device_Qr, Qr_Code, Qr_Code_Pay, System_User, create_session
+from app.core.database import System_User, create_session
 from app.core.auth import access_cookie_token
 from app.service.ksher_pay_sdk import KsherPay
 
@@ -111,7 +111,7 @@ async def router_dashboard(
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
 
-    devices = range(4)
+    devices = range(2)
     devices_off = range(2)
     return templates.TemplateResponse(
         "dashboard.html",
@@ -129,8 +129,6 @@ async def router_dashboard(
 async def router_device(
     db: Session = Depends(create_session),
     user: System_User = Depends(access_cookie_token),
-    bank_id: int = None,
-    device_id: int = None,
 ):
     if not user:
         return RedirectResponse(url="/")
@@ -152,7 +150,7 @@ async def router_device(
 
 
 @router_page.get("/dashboard_device", tags=["public"])
-async def router_device(
+async def router_dashboard_device(
     db: Session = Depends(create_session),
     user: System_User = Depends(access_cookie_token),
     bank_id: int = None,
@@ -185,20 +183,12 @@ async def router_record(db: Session = Depends(create_session), user: System_User
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
 
-    condition = True
-    if user.user_level != "root":
-        condition = or_(Bank.system_user_id == user.id)
-    sql = select(Bank.name).where(condition)
-    # print(sql)
-    _banks: Bank = db.exec(sql).all()
-
     datas = {}
     return templates.TemplateResponse(
         "record.html",
         {
             "request": {},
             "user": user,
-            "banks": _banks,
             "datas": datas,
             "now": _now,
         },
@@ -249,20 +239,6 @@ async def router_admin(db: Session = Depends(create_session), user: System_User 
 # bankCheckAccountBalance
 # ******************** ESP32 ******************************!SECTION
 @router_page.get("/heartbeat", tags=["esp32"], response_class=PlainTextResponse)
-async def heartbeat_esp32(
-    sn: str,
-    db: Session = Depends(create_session),
-):
-    _now = time_now()
-    _device: Device_Qr = db.exec(select(Device_Qr).where(Device_Qr.sn == sn)).one_or_none()
-    if _device:
-        _device.last_heartbeat = _now
-        db.commit()
-    else:
-        return "sn not found"
-    return "successful"
-
-
 @router_page.get("/test_mqtt", tags=["mqtt"])
 async def path_test_mqtt(
     publish: str = "/payment/test001",

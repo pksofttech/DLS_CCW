@@ -11,8 +11,22 @@
         {% include '_side_bar.html' %}
         <div class="content-wrapper text-gray-dark">
             <!-- ? ************************************************ HTML CONTENT ******************************************************** -->
+            <div class="info-box">
+                <span class="info-box-icon bg-warning "><i class="fas fa-table-columns"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Status of project(เลือกโครงการ)</span>
+                    <div class="form-group">
+                        <select class="form-control" style="width: 100%;" aria-hidden="true" onchange="on_select_project_chang(this.value)">
+                            <option selected="selected">demo(ตลาด demo)</option>
+                            <option>demo01(กทม)</option>
+                            <option>demo02(ปทุม)</option>
+                        </select>
+                    </div>
+                </div>
 
-            <iframe class="w-100 border rounded-lg border-dark" height="800"
+            </div>
+
+            <iframe id="grafana_frame" class="w-100 border rounded-lg border-dark" height="800"
                 src="https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&from=1681858035446&to=1681879635446&theme=dark&kiosk" title="description"></iframe>
 
             <!-- ? ************************************************************************************************************************ -->
@@ -24,7 +38,17 @@
 {% include '_script.html' %}
 
 <script>
+    function on_select_project_chang(v) {
+        debug(v);
+        document.getElementById('grafana_frame').src = document.getElementById('grafana_frame').src
+        toastMixin.fire({
+            //position: 'top',
+            title: "<h5 style='color:black'>" + "Select project :" + v + "</h5>",
+            background: bg_mode_theme,
+            icon: "success",
+        });
 
+    }
 </script>
 
 </html>

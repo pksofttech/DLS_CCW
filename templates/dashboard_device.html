@@ -16,7 +16,13 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Status of devices</span>
                     <span class="info-box-content">
-                        id 1234
+                        <div class="form-group">
+                            <select class="form-control" style="width: 100%;" aria-hidden="true" onchange="on_select_device_chang(this.value)">
+                                <option selected="selected">car wash 01</option>
+                                <option>car wash 02</option>
+                                <option>car wash 03</option>
+                            </select>
+                        </div>
                     </span>
                 </div>
 
@@ -25,7 +31,7 @@
                 <div class="col-sm-6">
                     <div class="card card-warning">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-gear"></i> Setting Device</h3>
+                            <h3 class="card-title"><i class="fa fa-gear"></i> Setting Device <span id="device_info_name_setting">car wash 01</span></h3>
                         </div>
 
                         <div class="card-body">
@@ -188,10 +194,12 @@
                 <div class="col-sm-6">
                     <div class="card card-info">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-circle-info"></i> Device info</h3>
+                            <h3 class="card-title"><i class="fa fa-circle-info"></i>
+                                <span id="device_info_name">car wash 01</span>
+                            </h3>
                         </div>
 
-                        <iframe class="w-100 border rounded-lg border-dark" height="800"
+                        <iframe id="grafana_frame" class="w-100 border rounded-lg border-dark" height="800"
                             src="https://grafana.devdls.com/d/wQ3db5P4k/dashboard-device?orgId=1&from=1681858069689&to=1681879669690&theme=dark&kiosk" title="description"></iframe>
 
 
@@ -209,7 +217,21 @@
 {% include '_script.html' %}
 
 <script>
+    function on_select_device_chang(v) {
+        debug(v);
+        document.getElementById('grafana_frame').src = document.getElementById('grafana_frame').src
+        document.getElementById('device_info_name_setting').innerText = v;
+        document.getElementById('device_info_name').innerText = v;
 
+
+        toastMixin.fire({
+            //position: 'top',
+            title: "<h5 style='color:black'>" + "Select device :" + v + "</h5>",
+            background: bg_mode_theme,
+            icon: "success",
+        });
+
+    }
 </script>
 
 </html>

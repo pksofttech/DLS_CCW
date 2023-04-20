@@ -71,10 +71,7 @@ def shutdown_event():
 app.include_router(auth.router)
 
 app.include_router(model_view.router_systems_user)
-app.include_router(model_view.router_banks)
-app.include_router(model_view.router_devices)
-app.include_router(model_view.router_qr_code_payment)
-app.include_router(model_view.router_qr_code_generator)
+
 
 app.include_router(websocket.router)
 
