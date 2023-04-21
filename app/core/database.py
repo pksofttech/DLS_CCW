@@ -1,8 +1,9 @@
 from typing import List, Optional
 
-from sqlmodel import Field, Relationship, Session, SQLModel, create_engine, delete
+from sqlmodel import Field, Relationship, Session, SQLModel, create_engine, delete, select
 
 from ..stdio import *
+
 
 # from models import SystemUsers
 
@@ -80,26 +81,26 @@ class Project(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True)
     createDate: datetime = Field(default=time_now(), nullable=False)
-    create_by: str
-    # last_login_Date = Column(DateTime)
-
     status: str = Field(default="")
     remark: str = Field(default="")
-    owner: int = Field(nullable=False)
-    system_user_id: Optional[int] = Field(default=None, foreign_key="system_user.id")
+    address: str = Field(default="")
+    staff: str = Field(default="")
+    phone: str = Field(default="")
+    pictureUrl: str = Field(default="/static/image/logo.png")
+    system_user_id: Optional[int] = Field(foreign_key="system_user.id", nullable=False)
 
 
 class Device(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     sn: str = Field(unique=True)
     createDate: datetime = Field(default=time_now(), nullable=False)
+    last_heart_beat: datetime = Field(default=time_now(), nullable=False)
     create_by: str
-    # last_login_Date = Column(DateTime)
     service_times: str = Field(default="")
     price_rates: str = Field(default="")
     status: str = Field(default="")
     remark: str = Field(default="")
-    system_user_id: int = Field(nullable=False)
+    project_id: Optional[int] = Field(foreign_key="project.id", nullable=False)
 
 
 # ******************** Time DB ********************************
@@ -116,19 +117,119 @@ class Log_status(SQLModel, table=True):
 #     session.execute(sql)
 
 # Base.metadata.create_all(engine)
+SQLModel.metadata.drop_all(engine)
 SQLModel.metadata.create_all(engine)
 
 
 def set_drop_table():
     print_warning("Drop table")
     with Session(engine) as session:
-        table_drop = [System_User, Device, Log_status]
+        table_drop = [Project, Device]
+
         for _t in table_drop:
             sql = delete(_t)
             print_warning(session.exec(sql))
-        session.commit()
+            session.commit()
 
 
-set_drop_table()
+# set_drop_table()
 
 print_success("import success module database.py")
+
+from .auth import get_password_hash
+
+
+async def set_init_database():
+    print_success("set_init_database")
+
+    with Session(engine) as session:
+        statement = select(System_User).where(System_User.username == "root")
+        _root: System_User = session.exec(statement).one_or_none()
+
+        if not _root:
+            print_warning(f"NOT ROOT System User")
+            root_user = System_User()
+            root_user.username = "root"
+            root_user.password = get_password_hash("12341234")
+            # root_user.email = "pksofttech@gmail.com"
+            _reg = time_now().strftime("%Y-%m-%dT%H:%M%z")
+            root_user.createDate = datetime.strptime(f"{_reg}", "%Y-%m-%dT%H:%M%z")
+            root_user.create_by = "Default System"
+            root_user.status = "SYSTEM"
+            root_user.user_level = "root"
+            session.add(root_user)
+            session.commit()
+            user_demo = ["demo", "ccw"]
+            for i in user_demo:
+                _u = System_User()
+                _u.username = i
+                _u.password = get_password_hash("12341234")
+                # root_user.email = "pksofttech@gmail.com"
+                _reg = time_now().strftime("%Y-%m-%dT%H:%M%z")
+                _u.createDate = datetime.strptime(f"{_reg}", "%Y-%m-%dT%H:%M%z")
+                _u.create_by = "Default_Test"
+                _u.status = "Test User"
+                _u.user_level = "admin"
+                session.add(_u)
+                print_warning(f"add user for test :{_u.username}")
+            session.commit()
+        else:
+            _root.user_level = "root"
+            _root.status = "Enable"
+            session.commit()
+
+        rows = session.exec(select(Project)).all()
+        if not rows:
+            statement = select(System_User).where(System_User.username == "demo")
+            demo: System_User = session.exec(statement).one()
+
+            p = Project()
+            p.name = "Project Demo 01"
+            p.system_user_id = demo.id
+            p.status = "Demo"
+            p.staff = "mr.demo"
+            p.address = "123/456 demonstrating"
+            p.phone = "02-123-4567"
+            # p.pictureUrl = "/static/image/logo.png"
+            session.add(p)
+
+            p = Project()
+            p.name = "Project Demo 02"
+            p.system_user_id = demo.id
+            p.status = "Demo"
+            p.staff = "mr.demo"
+            p.address = "123/456 demonstrating"
+            p.phone = "02-123-4567"
+            session.add(p)
+
+        session.commit()
+        rows = session.exec(select(Project)).all()
+        print_success(rows)
+
+        rows = session.exec(select(Device)).all()
+        if not rows:
+            d = Device(
+                sn="sn_demo-001",
+                project_id=1,
+                create_by="System for test",
+                status="demo",
+                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+            )
+            session.add(d)
+            session.commit()
+            print_success(d)
+
+            d = Device(
+                sn="sn_demo-002",
+                project_id=2,
+                create_by="System for test",
+                status="demo",
+                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+            )
+            session.add(d)
+            session.commit()
+            print_success(d)
+
+        rows = session.exec(select(Device)).all()
+        print_success(rows)
+    print_success("set_init_database successfully")

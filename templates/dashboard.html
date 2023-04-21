@@ -16,21 +16,27 @@
                 <div class="info-box-content">
                     <span class="info-box-text">Status of project(เลือกโครงการ)</span>
                     <div class="form-group">
-                        <select class="form-control" style="width: 100%;" aria-hidden="true" onchange="on_select_project_chang(this.value)">
-                            <option selected="selected">demo(ตลาด demo)</option>
-                            <option>demo01(กทม)</option>
-                            <option>demo02(ปทุม)</option>
+                        <select class="form-control" id="select_project" style="width: 100%;" aria-hidden="true" onchange="on_select_project_chang(this.value)">
+                            {% for p in projects %}
+                            {% if project_id == p.id %}
+                            <option selected value="{{p.id}}">{{p.name}}</option>
+                            {% else %}
+                            <option value="{{p.id}}">{{p.name}}</option>
+                            {% endif %}
+                            {% endfor %}
                         </select>
                     </div>
+                    <button onclick="open_page_device()" class="btn btn-sm bg-warning">
+                        <i class="fas fa-sliders-h"></i> จัดการ Devices
+                    </button>
                 </div>
-                <a href="/device" class="btn btn-sm bg-warning">
-                    <i class="fas fa-sliders-h"></i> จัดการ Devices
-                </a>
+
 
             </div>
 
             <iframe id="grafana_frame" class="w-100 border rounded-lg border-dark" height="800"
-                src="https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&from=1681858035446&to=1681879635446&theme=dark&kiosk" title="description"></iframe>
+                src="https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&from=1681858035446&to=1681879635446&theme=dark&kiosk&project_id={{project_id}}"
+                title="description"></iframe>
 
             <!-- ? ************************************************************************************************************************ -->
         </div>
@@ -51,6 +57,11 @@
             icon: "success",
         });
 
+    }
+
+    function open_page_device() {
+        const project_id = document.getElementById("select_project").value;
+        window.location.href = "/device/?project_id=" + project_id;
     }
 </script>
 

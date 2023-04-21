@@ -181,7 +181,8 @@
 
 
                                 <div class="form-group mt-2">
-                                    <button type="button" class="btn btn-outline-danger btn-block btn-lg"><i class="fa fa-gear"></i> ตั้งค่าระบบ</button>
+                                    <button type="button" class="btn btn-outline-danger btn-block btn-lg" onclick="apply_setting_device()"><i class="fa fa-gear"></i>
+                                        ตั้งค่าระบบ</button>
                                 </div>
 
                             </form>
@@ -229,6 +230,26 @@
             icon: "success",
         });
 
+    }
+
+    function apply_setting_device() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "กรุณายืนยันการปรับตั้งค่า!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, (ตกลง)!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Success!',
+                    'ระะบบดำเนินการปรับตั้งค่าใหม่แล้วจะมีผลเมื่อตู้ดำเนินการ sync ข้อมูลกับระบบ\nโดยปกติจะมีผลภายใน 60 วินาที',
+                    'success'
+                )
+            }
+        })
     }
 </script>
 

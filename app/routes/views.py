@@ -20,7 +20,7 @@ from fastapi.responses import (
 import json
 from sqlalchemy.orm import Session
 from sqlmodel import func, join, select, or_
-from app.core.database import System_User, create_session
+from app.core.database import Device, Project, System_User, create_session
 from app.core.auth import access_cookie_token
 from app.service.ksher_pay_sdk import KsherPay
 
@@ -109,7 +109,8 @@ async def router_project(
     if user.status.lower() == "disable":
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
-    projects = range(2)
+    print_success(f"My user is {user.username}")
+    projects = db.query(Project).where(Project.system_user_id == user.id).all()
     return templates.TemplateResponse(
         "project.html",
         {
@@ -125,7 +126,7 @@ async def router_project(
 async def router_dashboard(
     db: Session = Depends(create_session),
     user: System_User = Depends(access_cookie_token),
-    bank_id: int = None,
+    project_id: int = None,
 ):
     if not user:
         return RedirectResponse(url="/")
@@ -133,38 +134,76 @@ async def router_dashboard(
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
 
-    devices = range(2)
-    devices_off = range(2)
+    projects = db.query(Project).where(Project.system_user_id == user.id).all()
     return templates.TemplateResponse(
         "dashboard.html",
         {
             "request": {},
             "user": user,
-            "devices": devices,
-            "devices_off": devices_off,
+            "projects": projects,
+            "project_id": project_id,
             "now": _now,
         },
     )
+
+
+import random
 
 
 @router_page.get("/device", tags=["public"])
 async def router_device(
     db: Session = Depends(create_session),
     user: System_User = Depends(access_cookie_token),
+    project_id: int = None,
 ):
     if not user:
         return RedirectResponse(url="/")
     if user.status.lower() == "disable":
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
-    _now = time_now()
-    devices = range(4)
-    devices_off = range(2)
+    _now = time_now(0)
+
+    devices = []
+    project_name = "All Projects"
+    if project_id:
+        project_name = db.query(Project.name).where(Project.id == project_id).one()[0]
+        devices = db.query(Device).where(Device.project_id == project_id).all()
+    else:
+        project_ids = db.query(Project.id).where(Project.system_user_id == user.id).all()
+        print(project_ids)
+        for project_id in project_ids:
+            ds = db.query(Device).where(Device.project_id == project_id[0]).all()
+            for d in ds:
+                devices.append(d)
+
+    devices_on = []
+    devices_off = []
+    print(devices)
+    for device in devices:
+        d: Device = device
+        print(_now)
+        print(d.last_heart_beat)
+        print(_now - d.last_heart_beat)
+        print(d)
+        devices_on.append(
+            {
+                "id": d.id,
+                "pay": random.randint(100, 5000),
+                "sn": d.sn,
+                "last_heart_beat": d.last_heart_beat,
+                "sh": "OK",
+                "on": "OK",
+                "ps": "OK",
+                "vf": "OK",
+            }
+        )
+
     return templates.TemplateResponse(
         "device.html",
         {
             "request": {},
             "user": user,
-            "devices": devices,
+            "project_name": project_name,
+            "devices_on": devices_on,
             "devices_off": devices_off,
             "now": _now,
         },

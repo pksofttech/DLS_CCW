@@ -19,49 +19,55 @@
                     <div class="info-box-content">
                         <span class="info-box-text">Status of devices</span>
                         <span class="info-box-content">
-                            On line Devices
+                            {{project_name}}
                         </span>
+                        <a href="/dashboard" class="btn btn-sm btn-primary">
+                            <i class="fas fa-tachometer-alt"></i> View Dashboard
+                        </a>
                     </div>
-                    <a href="/dashboard" class="btn btn-sm btn-primary">
-                        <i class="fas fa-tachometer-alt"></i> View Dashboard
-                    </a>
+
 
                 </div>
-                {% for device in devices %}
+                {% for device in devices_on %}
                 <div class="col-sm-6 col-md-4">
 
                     <div class="info-box ">
 
                         <span class="info-box-icon bg-gradient-orange elevation-1 "><i class="fas fa-mobile-screen-button"></i></span>
                         <div class="info-box-content">
-                            <h3 class="profile-username text-center text-orange">Device demo</h3>
-                            <div class="text-success text-sm text-center m-1">{{device.last_heartbeat}}</div>
+                            <h3 class="profile-username text-center text-orange">{{device.sn}}</h3>
+                            <div class="text-success text-sm text-center m-1">{{device.last_heart_beat}}</div>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item text-primary">
                                     <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b>
-                                    <p class="float-right">xxx</p>
+                                    <p class="float-right">{{device.pay}}</p>
                                 </li>
                                 <li class="list-group-item text-warning">
                                     <b><i class="fa-regular fa-clock"></i> Service Hour</b>
-                                    <p class="float-right">3.5</p>
+                                    <p class="float-right">{{device.sh}}</p>
                                 </li>
                                 <li class="list-group-item text-success">
                                     <b><i class="fa-regular fa-clock"></i> On Services</b>
-                                    <p class="float-right">ปกติ</p>
+                                    <p class="float-right">{{device.on}}</p>
                                 </li>
                                 <li class="list-group-item text-info">
                                     <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b>
-                                    <p class="float-right">ปกติ</p>
+                                    <p class="float-right">{{device.ps}}</p>
                                 </li>
                                 <li class="list-group-item text-info">
                                     <b><i class="fa-regular fa-clock"></i> ปริมาณโฟม</b>
-                                    <p class="float-right">ปกติ</p>
+                                    <p class="float-right">{{device.vf}}</p>
                                 </li>
                                 <li class="list-group-item">
-                                    <a role="button" href="/dashboard_device/?id=1234" class="float-right">More..</a>
+                                    <a role="button" href="/dashboard_device/?id={{device.id}}" class="float-right">More...</a>
+                                    <button onclick="remove_device(1234)" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
+
+
                     </div>
                 </div>
                 {% endfor %}
@@ -109,7 +115,10 @@
                                     <p class="float-right">ปกติ</p>
                                 </li>
                                 <li class="list-group-item">
-                                    <a role="button" class="float-right">More..</a>
+                                    <a role="button" href="/dashboard_device/?id=1234" class="float-right">View dashboard</a>
+                                    <button onclick="remove_device(1234)" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -128,7 +137,26 @@
 {% include '_script.html' %}
 
 <script>
-
+    function remove_device(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "กรุณายืนยันการลบข้อมูลตู้ : ID xxxx",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, (ตกลง)!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Success!',
+                    'ระะบบดำเนินการลบข้อมูลเรียบร้อยแล้ว',
+                    'success'
+                );
+                window.location.reload();
+            }
+        })
+    }
 </script>
 
 </html>

@@ -49,7 +49,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     print_success(f"Server Start Time : {time_now()}")
-    await auth.create_systems_user()
+    await database.set_init_database()
 
 
 @app.on_event("shutdown")

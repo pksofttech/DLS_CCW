@@ -6,7 +6,6 @@ from printdebug import DebugColrPrinter, DebugPrinter, debug_enable
 
 
 class D_Colr:
-
     Default = "\033[39m"
     Black = "\033[30m"
     Red = "\033[31m"
@@ -61,7 +60,7 @@ tz = timezone(timedelta(hours=7))
 
 def time_now(utc=7):
     if utc == 0:
-        return datetime.now()
+        return datetime.now(tz=None)
     return datetime.now(tz=tz)
 
 
