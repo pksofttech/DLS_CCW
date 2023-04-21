@@ -99,6 +99,28 @@ async def router_home(db: Session = Depends(create_session), user: System_User =
     )
 
 
+@router_page.get("/project", tags=["public"])
+async def router_project(
+    db: Session = Depends(create_session),
+    user: System_User = Depends(access_cookie_token),
+):
+    if not user:
+        return RedirectResponse(url="/")
+    if user.status.lower() == "disable":
+        return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
+    _now = time_now()
+    projects = range(2)
+    return templates.TemplateResponse(
+        "project.html",
+        {
+            "request": {},
+            "user": user,
+            "projects": projects,
+            "now": _now,
+        },
+    )
+
+
 @router_page.get("/dashboard", tags=["public"])
 async def router_dashboard(
     db: Session = Depends(create_session),

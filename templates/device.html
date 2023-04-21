@@ -14,13 +14,17 @@
 
             <div class="row border rounded-lg p-2 border-warning">
                 <div class="info-box">
-                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                    <!-- <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span> -->
+                    <a href="/project" class="info-box-icon bg-warning "><i class="fas fa-warehouse"></i></a>
                     <div class="info-box-content">
                         <span class="info-box-text">Status of devices</span>
                         <span class="info-box-content">
                             On line Devices
                         </span>
                     </div>
+                    <a href="/dashboard" class="btn btn-sm btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> View Dashboard
+                    </a>
 
                 </div>
                 {% for device in devices %}
@@ -34,21 +38,24 @@
                             <div class="text-success text-sm text-center m-1">{{device.last_heartbeat}}</div>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item text-primary">
-                                    <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b> <a class="float-right">xxx</a>
+                                    <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b>
+                                    <p class="float-right">xxx</p>
                                 </li>
                                 <li class="list-group-item text-warning">
-                                    <b><i class="fa-regular fa-clock"></i> Service Hour</b> <a class="float-right">3.5</a>
+                                    <b><i class="fa-regular fa-clock"></i> Service Hour</b>
+                                    <p class="float-right">3.5</p>
                                 </li>
                                 <li class="list-group-item text-success">
-                                    <b><i class="fa-regular fa-clock"></i> On service</b> <a class="btn btn-outline-warning btn-sm float-right">
-                                        <i class="fas fa-pause"></i> Pause
-                                    </a>
+                                    <b><i class="fa-regular fa-clock"></i> On Services</b>
+                                    <p class="float-right">ปกติ</p>
                                 </li>
                                 <li class="list-group-item text-info">
-                                    <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b> <a class="float-right">ปกติ</a>
+                                    <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b>
+                                    <p class="float-right">ปกติ</p>
                                 </li>
                                 <li class="list-group-item text-info">
-                                    <b><i class="fa-regular fa-clock"></i> ปริมาณโฟม</b> <a class="float-right">ปกติ</a>
+                                    <b><i class="fa-regular fa-clock"></i> ปริมาณโฟม</b>
+                                    <p class="float-right">ปกติ</p>
                                 </li>
                                 <li class="list-group-item">
                                     <a role="button" href="/dashboard_device/?id=1234" class="float-right">More..</a>
@@ -67,7 +74,7 @@
                     Warning alert off line devices.
                 </div>
                 {% for device in devices_off %}
-                <div class="col-sm-6 col-md-3">
+                <div class="col-sm-6 col-md-4">
 
                     <div class="info-box">
                         <div class="ribbon-wrapper ribbon-lg">
@@ -90,9 +97,8 @@
                                     <p class="float-right">3.5</p>
                                 </li>
                                 <li class="list-group-item text-secondary">
-                                    <b><i class="fa-regular fa-clock"></i> On service</b> <a class="btn btn-outline-secondary btn-sm float-right">
-                                        <i class="fas fa-pause"></i> Pause
-                                    </a>
+                                    <b><i class="fa-regular fa-clock"></i> On Services</b>
+                                    <p class="float-right">-</p>
                                 </li>
                                 <li class="list-group-item text-secondary">
                                     <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b>

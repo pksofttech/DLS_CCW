@@ -113,20 +113,23 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db=Depends(creat
 async def access_cookie_token(request: Request, token_name="Authorization", db: Session = Depends(create_session)):
     token = None
     user = None
-    _cookie_str = request.headers.get("cookie")
-    if _cookie_str:
-        cookies = _cookie_str.split(";")
-        for c in cookies:
-            c = c.strip()
-            # print(c)
-            if c.startswith(f"{token_name}=bearer "):
-                token = c.split(" ")[1]
-                user = await get_current_user_token(token)
-    if user:
-        _system_user = db.exec(select(System_User).where(System_User.username == user)).one_or_none()
-        return _system_user
+    try:
+        _cookie_str = request.headers.get("cookie")
+        if _cookie_str:
+            cookies = _cookie_str.split(";")
+            for c in cookies:
+                c = c.strip()
+                # print(c)
+                if c.startswith(f"{token_name}=bearer "):
+                    token = c.split(" ")[1]
+                    user = await get_current_user_token(token)
+        if user:
+            _system_user = db.exec(select(System_User).where(System_User.username == user)).one_or_none()
+            return _system_user
 
-    print_warning("Not Authorization")
+        print_warning("Not Authorization")
+    except Exception as e:
+        print_warning(f"Exception : {e}")
     return None
 
 
