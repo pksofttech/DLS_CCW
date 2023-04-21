@@ -23,6 +23,7 @@ from ..stdio import *
 
 # For postgres DB
 SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@47.254.250.76/ccw"
+SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@172.17.0.18/ccw"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
