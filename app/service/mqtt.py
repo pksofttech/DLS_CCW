@@ -1,3 +1,4 @@
+import json
 from fastapi_mqtt import FastMQTT, MQTTConfig
 from ..stdio import *
 import httpx as requests
@@ -17,21 +18,25 @@ fast_mqtt = FastMQTT(
 
 @fast_mqtt.on_connect()
 def connect(client, flags, rc, properties):
-    fast_mqtt.client.subscribe("DLS/HB")  # subscribing mqtt topic
+    # fast_mqtt.client.subscribe("DLS/HB")  # subscribing mqtt topic
+    fast_mqtt.client.subscribe("/time_stamp")  # subscribing mqtt topic
     print_success("Connected: ", flags, rc, properties)
 
 
 @fast_mqtt.on_message()
 async def message(client, topic, payload, qos, properties):
-    print_success("Received message: ", client, topic, payload.decode(), qos, properties)
-    data = payload.decode()
-    sn = "NoSN"
-    if data == "ESP32_2":
-        sn = "002"
+    try:
+        print_success("Received message: ", client, topic, payload.decode(), qos, properties)
+        data = payload.decode()
+        sn = "NoSN"
+        if data == "ESP32_2":
+            sn = "002"
 
-    url = f"http://127.0.0.1:8000/heartbeat?sn={sn}"
-    print_success(f"httpx : {url}")
-    requests.get(url)
+        # url = f"http://127.0.0.1:8000/heartbeat?sn={sn}"
+        # print_success(f"httpx : {url}")
+        # requests.get(url)
+    except Exception as e:
+        print_error(e)
 
 
 @fast_mqtt.on_disconnect()

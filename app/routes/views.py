@@ -163,14 +163,16 @@ async def router_device(
     _now = time_now(0)
 
     devices = []
-    project_name = "All Projects"
+    project_name = []
     if project_id:
-        project_name = db.query(Project.name).where(Project.id == project_id).one()[0]
+        project_name = db.query(Project.name).where(Project.id == project_id).one()
         devices = db.query(Device).where(Device.project_id == project_id).all()
     else:
-        project_ids = db.query(Project.id).where(Project.system_user_id == user.id).all()
+        project_ids = db.query(Project.id, Project.name).where(Project.system_user_id == user.id).all()
         print(project_ids)
         for project_id in project_ids:
+            # print_warning(project_id[1])
+            project_name.append(project_id[1])
             ds = db.query(Device).where(Device.project_id == project_id[0]).all()
             for d in ds:
                 devices.append(d)

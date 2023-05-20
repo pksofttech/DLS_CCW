@@ -18,12 +18,17 @@
                     <a href="/project" class="info-box-icon bg-warning "><i class="fas fa-warehouse"></i></a>
                     <div class="info-box-content">
                         <span class="info-box-text">Status of devices</span>
-                        <span class="info-box-content">
-                            {{project_name}}
-                        </span>
+                        <div class="info-box-content">
+                            {% for p in project_name %}
+                            {{p}}
+                            <br>
+                            {% endfor %}
+                        </div>
                         <a href="/dashboard" class="btn btn-sm btn-primary">
                             <i class="fas fa-tachometer-alt"></i> View Dashboard
                         </a>
+                        <button onclick="add_device()" class="btn btn-sm btn-outline-warning my-2">
+                            <i class="fas fa-plus"></i> สร้าง Device</button>
                     </div>
 
 
@@ -132,12 +137,77 @@
         </div>
         {% include '_footer.html' %}
     </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modal_add_device" style="display: none;" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Devive</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Device serial number (SN:)</label>
+                            <input type="text" class="form-control" id="device_sn" placeholder="" value="demo_001">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Device status</label>
+                            <input type="text" class="form-control" id="device_status" placeholder="" value="address test">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleSelectBorderWidth2">config:<code>Select Project</code></label>
+                            <select class="custom-select form-control-border border-width-2" id="exampleSelectBorderWidth2">
+                                {% for p in project_name %}
+                                <option>{{p}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-danger" onclick="close_add_device()">Close</button>
+                    <button type="button" class="btn btn-success" onclick="submit_add_device()">Success</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
 </body>
 
 {% include '_script.html' %}
 
 <script>
-    function remove_device(id) {
+    $('#modal_add_device').modal('show');
+
+    async function close_add_device() {
+        let result = await Swal.fire({
+            title: 'Do you close ?',
+            showDenyButton: true,
+            confirmButtonText: 'Yes (ตกลง)',
+            denyButtonText: `No (ไม่ต้องการ)`,
+        });
+        if (result.isConfirmed) {
+            $('#modal_add_device').modal('hide');
+        }
+    }
+
+    async function add_device() {
+        let result = await Swal.fire({
+            title: 'Do you have to create a new device?',
+            showDenyButton: true,
+            //showCancelButton: true,
+            confirmButtonText: 'Yes (ต้องการสร้าง device)',
+            denyButtonText: `No (ไม่ต้องการ)`,
+        });
+        if (result.isConfirmed) {
+            $('#modal_add_device').modal('show');
+        }
+    }
+
+    async function remove_device(id) {
         Swal.fire({
             title: 'Are you sure?',
             text: "กรุณายืนยันการลบข้อมูลตู้ : ID xxxx",

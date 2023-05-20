@@ -29,3 +29,10 @@
 
 <script src="/static/dist/js/common_script.js?q=2"></script>
 <script src="/static/dist/js/web_socket.js"></script>
+<script>
+    function debug_form(formData) {
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}, ${pair[1]}`);
+        }
+    }
+</script>
