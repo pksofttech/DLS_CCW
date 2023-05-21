@@ -32,6 +32,7 @@ router_api = APIRouter(prefix="/api_model")
 async def path_post_project(
     user: System_User = Depends(get_current_user),
     db: Session = Depends(create_session),
+    project_owner: str = Form(...),
     project_name: str = Form(...),
     project_address: str = Form(...),
     project_staff: str = Form(...),
@@ -54,14 +55,25 @@ async def path_post_project(
         if _project:
             return {"success": False, "msg": "item is already in database(รายการ ซ้ำ)"}
 
+        if project_owner == "ME" or project_owner == "":
+            owner_id = user.id
+        else:
+            if user.username != "root":
+                return {"success": False, "msg": "user is not root"}
+            else:
+                owner: System_User = db.exec(select(System_User).where(System_User.username == project_owner)).one_or_none()
+                if not owner:
+                    return {"success": False, "msg": "user is not in database"}
+                owner_id = owner.id
         _project = Project(
             name=project_name,
             createDate=time_now(),
             address=project_address,
             staff=project_staff,
             phone=project_phone,
-            system_user_id=user.id,
+            system_user_id=owner_id,
         )
+        print_success(_project)
         db.add(_project)
         db.commit()
         db.refresh(_project)

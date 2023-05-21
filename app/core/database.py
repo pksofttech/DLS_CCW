@@ -76,7 +76,7 @@ class System_User(SQLModel, table=True):
     user_level: str
     pictureUrl: str = Field(default="")
     remark: str = Field(default="")
-    projects: List["Project"] = Relationship()
+    projects: List["Project"] = Relationship(back_populates="system_user")
 
 
 class Project(SQLModel, table=True):
@@ -90,6 +90,7 @@ class Project(SQLModel, table=True):
     phone: str = Field(default="")
     pictureUrl: str = Field(default="/static/image/logo.png")
     system_user_id: Optional[int] = Field(foreign_key="system_user.id", nullable=False)
+    system_user: Optional[System_User] = Relationship(back_populates="projects")
 
 
 class Device(SQLModel, table=True):
@@ -113,14 +114,22 @@ class Log_status(SQLModel, table=True):
     value: str = Field(nullable=False)
 
 
+class Log_mqtt(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    time: datetime
+    topic: str = Field(nullable=False)
+    sn: str = Field(nullable=False)
+    message: str = Field(nullable=False)
+
+
 # with Session(engine) as session:
 #     pass
 #     sql = "ALTER TABLE bank ADD bank_type VARCHAR DEFAULT 'scb_payment'"
 #     session.execute(sql)
 
 # Base.metadata.create_all(engine)
-SQLModel.metadata.drop_all(engine)
-SQLModel.metadata.create_all(engine)
+# SQLModel.metadata.drop_all(engine)
+# SQLModel.metadata.create_all(engine)
 
 
 def set_drop_table():
@@ -141,7 +150,20 @@ print_success("import success module database.py")
 from .auth import get_password_hash
 
 
+async def seve_to_log_mqtt(data: dict):
+    try:
+        with Session(engine) as session:
+            _log_mqtt = Log_mqtt(**data)
+            _log_mqtt.time = time_now()
+            session.add(_log_mqtt)
+            session.commit()
+        print_success("seve_to_log_mqtt")
+    except Exception as err:
+        print_error(f"seve_to_log_mqtt exception : {err}")
+
+
 async def set_init_database():
+    return
     print_success("set_init_database")
 
     with Session(engine) as session:
@@ -200,6 +222,15 @@ async def set_init_database():
             p.system_user_id = demo.id
             p.status = "Demo"
             p.staff = "mr.demo"
+            p.address = "123/456 demonstrating"
+            p.phone = "02-123-4567"
+            session.add(p)
+
+            p = Project()
+            p.name = "Project CCW 01"
+            p.system_user_id = 3
+            p.status = "CCW"
+            p.staff = "mr.CCW"
             p.address = "123/456 demonstrating"
             p.phone = "02-123-4567"
             session.add(p)

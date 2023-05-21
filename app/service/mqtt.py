@@ -1,5 +1,8 @@
 import json
+import time
 from fastapi_mqtt import FastMQTT, MQTTConfig
+
+from app.core.database import seve_to_log_mqtt
 from ..stdio import *
 import httpx as requests
 
@@ -25,18 +28,28 @@ def connect(client, flags, rc, properties):
 
 @fast_mqtt.on_message()
 async def message(client, topic, payload, qos, properties):
+    start_time = time.perf_counter()
     try:
-        print_success("Received message: ", client, topic, payload.decode(), qos, properties)
-        data = payload.decode()
-        sn = "NoSN"
-        if data == "ESP32_2":
-            sn = "002"
+        mqtt_msg = payload.decode()
+        # print_success("Received message: ", topic, mqtt_msg, "qos:", qos)
+        json_msg = json.loads(mqtt_msg)
+        sn = json_msg.get("sn", "")
+        mqtt_data = {"topic": topic, "sn": sn, "message": mqtt_msg}
+        await seve_to_log_mqtt(mqtt_data)
+        if topic == "/heartbeat":
+            print_success("Received heartbeat message: ", topic, mqtt_msg, "qos:", qos)
+        elif topic == "/time_stamp":
+            print_success("Received time_stamp message: ", topic, mqtt_msg, "qos:", qos)
 
-        # url = f"http://127.0.0.1:8000/heartbeat?sn={sn}"
-        # print_success(f"httpx : {url}")
-        # requests.get(url)
+        else:
+            print_warning("Received message: ", topic, mqtt_msg, "qos:", qos)
+
     except Exception as e:
         print_error(e)
+
+    end_time = time.perf_counter()
+    total_time = (end_time - start_time) * 1000
+    print(f"Function @fast_mqtt.on_message() Took {total_time:.4f} ms")
 
 
 @fast_mqtt.on_disconnect()

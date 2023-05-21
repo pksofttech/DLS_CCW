@@ -110,7 +110,17 @@ async def router_project(
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
     print_success(f"My user is {user.username}")
-    projects = db.query(Project).where(Project.system_user_id == user.id).all()
+
+    owners = []
+    if user.username == "root":
+        projects = db.query(Project).all()
+        _system_user = db.query(System_User.username).where(System_User.username != "root").all()
+        for _s in _system_user:
+            owners.append(_s[0])
+    else:
+        owners = ["ME"]
+        projects = db.query(Project).where(Project.system_user_id == user.id).all()
+
     return templates.TemplateResponse(
         "project.html",
         {
@@ -118,6 +128,7 @@ async def router_project(
             "user": user,
             "projects": projects,
             "now": _now,
+            "owners": owners,
         },
     )
 
@@ -134,7 +145,11 @@ async def router_dashboard(
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
 
-    projects = db.query(Project).where(Project.system_user_id == user.id).all()
+    if user.username == "root":
+        projects = db.query(Project).all()
+    else:
+        projects = db.query(Project).where(Project.system_user_id == user.id).all()
+
     return templates.TemplateResponse(
         "dashboard.html",
         {
@@ -168,7 +183,10 @@ async def router_device(
         project_name = db.query(Project.name).where(Project.id == project_id).one()
         devices = db.query(Device).where(Device.project_id == project_id).all()
     else:
-        project_ids = db.query(Project.id, Project.name).where(Project.system_user_id == user.id).all()
+        if user.username == "root":
+            project_ids = db.query(Project.id, Project.name).all()
+        else:
+            project_ids = db.query(Project.id, Project.name).where(Project.system_user_id == user.id).all()
         print(project_ids)
         for project_id in project_ids:
             # print_warning(project_id[1])
