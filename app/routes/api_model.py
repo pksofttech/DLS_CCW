@@ -28,7 +28,7 @@ DIR_PATH = config.DIR_PATH
 router_api = APIRouter(prefix="/api_model")
 
 
-@router_api.post("/project")
+@router_api.post("/project/")
 async def path_post_project(
     user: System_User = Depends(get_current_user),
     db: Session = Depends(create_session),
