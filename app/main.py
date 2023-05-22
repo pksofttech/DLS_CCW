@@ -56,7 +56,7 @@ from app.service.mqtt import fast_mqtt
 
 
 @app.on_event("startup")
-@repeat_every(seconds=5)
+@repeat_every(seconds=60)
 async def scheduler_task():
     # with Session(engine) as session:
     #     statement = select(System_User).where(System_User.username == "root")
