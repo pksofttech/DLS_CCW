@@ -46,8 +46,11 @@
                                         <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: {{p.address}}</li>
                                         <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone :{{p.phone}}</li>
                                     </ul>
-                                    <button onclick="remove_project('{{p.id}}');" class="btn btn-sm btn-outline-danger m-4">
+                                    <button onclick="remove_project('{{p.id}}');" class="btn btn-sm btn-outline-danger mx-4 my-2">
                                         <i class="fas fa-trash-can"></i> Remove (ยกเลิกโครงการ)
+                                    </button>
+                                    <button onclick="edit_project('{{p.id}}');" class="btn btn-sm btn-outline-warning mx-4">
+                                        <i class="fas fa-edit"></i> Edit (แก้ไขข้อมูล โครงการ)
                                     </button>
                                 </div>
                                 <div class="col-5 text-center">
@@ -81,7 +84,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add New Project</h4>
+                    <h4 class="modal-title" id="modal_project_label">Add New Project</h4>
                     <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">x</span>
                     </button> -->
@@ -95,6 +98,15 @@
                                 <option>{{owner}}</option>
                                 {% endfor %}
                             </select>
+                        </div>
+
+                        <div class="form-group text-center">
+
+                            <img src="/static/dist/img/img_not_found.png" id="preview-img-of-item" class="img-circle elevation-2" width="128px" height="128px" alt="ไม่มีรูป" />
+
+                            <div class="mt-2">
+                                <input type="file" class="btn btn-outline-warning" name="image_upload" accept="image/*" onchange="showPreview(event,'preview-img-of-item');" />
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -129,6 +141,7 @@
 {% include '_script.html' %}
 
 <script>
+    let project_id = 0;
     async function add_project() {
         let result = await Swal.fire({
             title: 'Do you have to create a new project?',
@@ -138,6 +151,21 @@
             denyButtonText: `No (ไม่ต้องการ)`,
         });
         if (result.isConfirmed) {
+            project_id = 0;
+            $('#modal_add_project').modal('show');
+        }
+    }
+
+    async function edit_project(id) {
+        let result = await Swal.fire({
+            title: 'Do you have to edit a project?',
+            showDenyButton: true,
+            //showCancelButton: true,
+            confirmButtonText: 'Yes (ต้องการแก้ไข project)',
+            denyButtonText: `No (ไม่ต้องการ)`,
+        });
+        if (result.isConfirmed) {
+            project_id = id;
             $('#modal_add_project').modal('show');
         }
     }
