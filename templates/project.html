@@ -243,7 +243,7 @@
         }
     }
     async function submit_project() {
-        const project_owner = document.getElementById("project_owner").value;
+        let project_owner = document.getElementById("project_owner").value;
         const project_name = document.getElementById("project_name").value;
         const project_address = document.getElementById("project_address").value;
         const project_staff = document.getElementById("project_staff").value;
@@ -266,6 +266,9 @@
             });
 
             if (result.isConfirmed) {
+                if (project_owner == "") {
+                    project_owner = "ME";
+                }
                 const formData = new FormData();
                 formData.append("id", project_id);
                 formData.append("project_owner", project_owner);
