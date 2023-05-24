@@ -113,13 +113,13 @@ async def router_project(
 
     owners = []
     if user.username == "root":
-        projects = db.query(Project).all()
+        projects = db.query(Project).order_by(Project.id).all()
         _system_user = db.query(System_User.username).where(System_User.username != "root").all()
         for _s in _system_user:
             owners.append(_s[0])
     else:
         owners = ["ME"]
-        projects = db.query(Project).where(Project.system_user_id == user.id).all()
+        projects = db.query(Project).where(Project.system_user_id == user.id).order_by(Project.id).all()
 
     return templates.TemplateResponse(
         "project.html",
@@ -208,12 +208,14 @@ async def router_device(
             {
                 "id": d.id,
                 "pay": random.randint(100, 5000),
+                "name": d.name,
                 "sn": d.sn,
                 "last_heart_beat": d.last_heart_beat,
                 "sh": "OK",
                 "on": "OK",
                 "ps": "OK",
                 "vf": "OK",
+                "project_id": d.project_id,
             }
         )
 

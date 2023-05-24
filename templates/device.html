@@ -37,11 +37,16 @@
                 <div class="col-sm-6 col-md-4">
 
                     <div class="info-box ">
-
                         <span class="info-box-icon bg-gradient-orange elevation-1 "><i class="fas fa-mobile-screen-button"></i></span>
                         <div class="info-box-content">
+                            <h3 class="profile-username text-center text-success">{{device.name}}</h3>
                             <h3 class="profile-username text-center text-orange">{{device.sn}}</h3>
                             <div class="text-success text-sm text-center m-1">{{device.last_heart_beat}}</div>
+                            <div class="text-info text-sm text-center m-1">Project ID:{{device.project_id}}</div>
+
+                            <button onclick="edit_device('{{device.id}}')" class="btn btn-sm btn-outline-warning">
+                                Edit <i class="fas fa-edit"></i>
+                            </button>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item text-primary">
                                     <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b>
@@ -65,7 +70,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     <a role="button" href="/dashboard_device/?id={{device.id}}" class="float-right">More...</a>
-                                    <button onclick="remove_device(1234)" class="btn btn-sm btn-outline-danger">
+                                    <button onclick="remove_device('{{device.id}}')" class="btn btn-sm btn-outline-danger">
                                         <i class="fas fa-trash-can"></i>
                                     </button>
                                 </li>
@@ -121,7 +126,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     <a role="button" href="/dashboard_device/?id=1234" class="float-right">View dashboard</a>
-                                    <button onclick="remove_device(1234)" class="btn btn-sm btn-outline-danger">
+                                    <button onclick="remove_device('{{device.id}}')" class="btn btn-sm btn-outline-danger">
                                         <i class="fas fa-trash-can"></i>
                                     </button>
                                 </li>
@@ -142,22 +147,23 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add New Devive</h4>
+                    <h4 class="modal-title" id="modal_device_label">Add New Devive</h4>
                 </div>
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Device serial number (SN:)</label>
-                            <input type="text" class="form-control" id="device_sn" placeholder="" value="demo_001">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Device status</label>
-                            <input type="text" class="form-control" id="device_status" placeholder="" value="address test">
+                            <label for="exampleInputEmail1">Device Name</label>
+                            <input type="text" class="form-control" id="device_name" placeholder="" value="demo_001">
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleSelectBorderWidth2">config:<code>Select Project</code></label>
-                            <select class="custom-select form-control-border border-width-2" id="exampleSelectBorderWidth2">
+                            <label for="exampleInputEmail1">** Device serial number ** (SN:)</label>
+                            <input type="text" class="form-control" id="device_sn" placeholder="" value="sn-demo_001">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="device_project_name">config:<code>Select Project</code></label>
+                            <select class="custom-select form-control-border border-width-2" id="device_project_name">
                                 {% for p in project_name %}
                                 <option>{{p}}</option>
                                 {% endfor %}
@@ -167,7 +173,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-danger" onclick="close_add_device()">Close</button>
-                    <button type="button" class="btn btn-success" onclick="submit_add_device()">Success</button>
+                    <button type="button" class="btn btn-success" onclick="submit_device()">Success</button>
                 </div>
             </div>
 
@@ -180,7 +186,9 @@
 {% include '_script.html' %}
 
 <script>
-    $('#modal_add_device').modal('show');
+    let device_id = 0;
+    //$('#modal_add_device').modal('show');
+
 
     async function close_add_device() {
         let result = await Swal.fire({
@@ -203,30 +211,125 @@
             denyButtonText: `No (ไม่ต้องการ)`,
         });
         if (result.isConfirmed) {
+            document.getElementById("modal_device_label").innerHTML = "Add New Device";
+            modal_device_label
+            device_id = 0;
             $('#modal_add_device').modal('show');
         }
     }
 
+    async function edit_device(id) {
+        let result = await Swal.fire({
+            title: 'Do you have to edit a device?',
+            showDenyButton: true,
+            //showCancelButton: true,
+            confirmButtonText: 'Yes (ต้องการสร้างแก้ไข device)',
+            denyButtonText: `No (ไม่ต้องการ)`,
+        });
+        if (result.isConfirmed) {
+            document.getElementById("modal_device_label").innerHTML = "Edit Device id: " + id;
+            device_id = id;
+            const _reply = await fetchApi("/api_model/device/" + id, "get", null, "json");
+            if (_reply.success) {
+                const _d = _reply.data;
+                const device_project_name = _reply.device_project_name;
+                console.log(_d);
+                document.getElementById("device_name").value = _d.name;
+                document.getElementById("device_sn").value = _d.sn;
+                document.getElementById("device_project_name").value = device_project_name;
+                $('#modal_add_device').modal('show');
+            }
+
+        }
+    }
+
     async function remove_device(id) {
-        Swal.fire({
+        const result = await Swal.fire({
             title: 'Are you sure?',
-            text: "กรุณายืนยันการลบข้อมูลตู้ : ID xxxx",
+            text: "กรุณายืนยันการลบข้อมูลตู้ : ID " + id,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, (ตกลง)!'
-        }).then((result) => {
-            if (result.isConfirmed) {
+        });
+        if (result.isConfirmed) {
+            const _reply = await fetchApi("/api_model/device/" + id, "delete", null, "json");
+            if (_reply.success) {
                 Swal.fire(
                     'Success!',
                     'ระะบบดำเนินการลบข้อมูลเรียบร้อยแล้ว',
                     'success'
                 );
                 window.location.reload();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "unsuccessful",
+                    html: _reply.msg,
+                });
             }
-        })
+        }
     }
+
+    async function submit_device() {
+        const device_name = document.getElementById("device_name").value;
+        const device_sn = document.getElementById("device_sn").value;
+        const device_project_name = document.getElementById("device_project_name").value;
+
+
+        if (device_name == "" || device_sn == "" || device_project_name == "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!(ข้อมูลไม่ครบ...)',
+                footer: 'CCW'
+            })
+        } else {
+
+            let result = await Swal.fire({
+                title: 'Do you is Confirm ?',
+                showDenyButton: true,
+                confirmButtonText: 'Yes (ตกลง)',
+                denyButtonText: `No (ไม่ต้องการ)`,
+            });
+
+            if (result.isConfirmed) {
+                const formData = new FormData();
+                formData.append("id", device_id);
+                formData.append("device_name", device_name);
+                formData.append("device_sn", device_sn);
+                formData.append("device_project_name", device_project_name);
+
+                debug_form(formData)
+
+                const _reply = await fetchApi("/api_model/device/", "post", formData, "json");
+                if (_reply.success) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Successful",
+                        html: _reply.msg,
+                    }).then(() => {
+                        location.reload();
+
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "unsuccessful",
+                        html: _reply.msg,
+                    }).then(() => {
+
+
+                    });
+                }
+
+
+            }
+        }
+
+    }
+
 </script>
 
 </html>

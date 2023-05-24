@@ -96,6 +96,7 @@ class Project(SQLModel, table=True):
 class Device(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     sn: str = Field(unique=True)
+    name: str = Field(unique=True)
     createDate: datetime = Field(default=time_now(), nullable=False)
     last_heart_beat: datetime = Field(default=time_now(), nullable=False)
     create_by: str
@@ -243,6 +244,7 @@ async def set_init_database():
         if not rows:
             d = Device(
                 sn="sn_demo-001",
+                name="demo-001",
                 project_id=1,
                 create_by="System for test",
                 status="demo",
@@ -254,6 +256,7 @@ async def set_init_database():
 
             d = Device(
                 sn="sn_demo-002",
+                name="demo-002",
                 project_id=2,
                 create_by="System for test",
                 status="demo",

@@ -102,10 +102,11 @@
 
                         <div class="form-group text-center">
 
-                            <img src="/static/dist/img/img_not_found.png" id="preview-img-of-item" class="img-circle elevation-2" width="128px" height="128px" alt="ไม่มีรูป" />
+                            <img src="" id="preview-img-of-item" class="img-circle elevation-2" width="128px" height="128px" alt="ไม่มีรูป" />
 
                             <div class="mt-2">
-                                <input type="file" class="btn btn-outline-warning" name="image_upload" accept="image/*" onchange="showPreview(event,'preview-img-of-item');" />
+                                <input type="file" class="btn btn-outline-warning" id="project_image_upload" accept="image/*"
+                                    onchange="showPreview(event,'preview-img-of-item');" />
                             </div>
                         </div>
 
@@ -129,7 +130,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-danger" onclick="close_add_project()">Close</button>
-                    <button type="button" class="btn btn-success" onclick="submit_add_project()">Success</button>
+                    <button type="button" class="btn btn-success" onclick="submit_project()">Success</button>
                 </div>
             </div>
 
@@ -152,6 +153,9 @@
         });
         if (result.isConfirmed) {
             project_id = 0;
+            document.getElementById("modal_project_label").innerHTML = "Add project";
+            document.getElementById("project_owner").disabled = false;
+
             $('#modal_add_project').modal('show');
         }
     }
@@ -166,7 +170,23 @@
         });
         if (result.isConfirmed) {
             project_id = id;
-            $('#modal_add_project').modal('show');
+            document.getElementById("modal_project_label").innerHTML = "Edit project";
+            document.getElementById("project_owner").disabled = true;
+            const _reply = await fetchApi("/api_model/project/" + id, "get", null, "json");
+            if (_reply.success) {
+                const _p = _reply.data;
+                const _p_owner = _reply.project_owner;
+                console.log(_p);
+                document.getElementById("project_owner").value = _p_owner.username;
+                document.getElementById("project_name").value = _p.name;
+                document.getElementById("project_address").value = _p.address;
+                document.getElementById("project_staff").value = _p.staff;
+                document.getElementById("project_phone").value = _p.phone;
+                document.getElementById("project_phone").value = _p.phone;
+                document.getElementById("preview-img-of-item").src = _p.pictureUrl;
+                $('#modal_add_project').modal('show');
+            }
+
         }
     }
 
@@ -220,11 +240,9 @@
                     });
                 }
             }
-
-
         }
     }
-    async function submit_add_project() {
+    async function submit_project() {
         const project_owner = document.getElementById("project_owner").value;
         const project_name = document.getElementById("project_name").value;
         const project_address = document.getElementById("project_address").value;
@@ -249,12 +267,21 @@
 
             if (result.isConfirmed) {
                 const formData = new FormData();
-                formData.append("id", 0);
+                formData.append("id", project_id);
                 formData.append("project_owner", project_owner);
                 formData.append("project_name", project_name);
                 formData.append("project_address", project_address);
                 formData.append("project_staff", project_staff);
                 formData.append("project_phone", project_phone);
+
+                const project_image_upload = document.getElementById("project_image_upload").value;
+                if (project_image_upload != "") {
+
+                    formData.append("image_upload", await dataURLtoFile(document.getElementById("preview-img-of-item").src, project_image_upload));
+                    debug("form is already uploaded file")
+
+                }
+
                 debug_form(formData)
 
                 const _reply = await fetchApi("/api_model/project/", "post", formData, "json");
@@ -283,6 +310,66 @@
         }
 
     }
+
+</script>
+
+<script>
+    async function dataURLtoFile(data_url, filename = "img") {
+        if (data_url == "") {
+            return;
+        }
+
+        const blob = await (await fetch(data_url)).blob();
+        return new File([blob], filename);
+    }
+    async function resizeImage(base64Str, w = 600, h = 600) {
+        let img = new Image();
+        img.src = base64Str;
+        let canvas = document.createElement("canvas");
+        const MAX_WIDTH = w;
+        const MAX_HEIGHT = h;
+        await img.decode();
+        let width = img.naturalWidth;
+        let height = img.naturalHeight;
+
+        if ((width < MAX_WIDTH) & (height < MAX_HEIGHT)) {
+            debug("Not resizeImage");
+            return base64Str;
+        }
+        if (width > height) {
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+        } else {
+            if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+            }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        // debug(canvas.toDataURL())
+        debug("resizeImage Image");
+        return canvas.toDataURL();
+    }
+
+    async function showPreview(event, id) {
+        if (event.target.files.length > 0) {
+            const preview = document.getElementById(id);
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = async function () {
+
+                preview.src = await resizeImage(reader.result, 128, 128);
+                //print_warn(preview.src)
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
 </script>
 
 </html>

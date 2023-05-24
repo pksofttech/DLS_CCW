@@ -191,11 +191,11 @@ async function checkCookie() {
         await get_user_session();
         // window.location.href = HOME_ROUTE
     } else {
-        toastMixin.fire({
-            background: bg_mode_theme,
-            title: "สวัดดี\nยินดีต้อนรับ",
-            icon: "info",
-        });
+        // toastMixin.fire({
+        //     background: bg_mode_theme,
+        //     title: "สวัดดี\nยินดีต้อนรับ",
+        //     icon: "info",
+        // });
         debug("ไม่พบการลงชื่อเข้าระบบ");
     }
 }
