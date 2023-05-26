@@ -56,7 +56,7 @@ from app.service.mqtt import fast_mqtt
 
 
 @app.on_event("startup")
-@repeat_every(seconds=360)
+@repeat_every(seconds=60 * 60)
 async def scheduler_task():
     # with Session(engine) as session:
     #     statement = select(System_User).where(System_User.username == "root")
@@ -96,6 +96,7 @@ def shutdown_event():
 app.include_router(auth.router)
 
 app.include_router(model_view.router_systems_user)
+app.include_router(model_view.router_log_pay)
 
 
 app.include_router(websocket.router)

@@ -19,6 +19,7 @@ from app.core.auth import access_cookie_token, get_current_user, get_password_ha
 # from sqlalchemy import or_
 # from sqlalchemy.orm import Session
 from app.core.database import Project, System_User, Device, create_session
+from app.service.mqtt import fast_mqtt
 
 from ..stdio import *
 
@@ -224,6 +225,28 @@ async def path_post_project(
     return {"success": True, "msg": "successfully"}
 
 
+@router_api.post("/device_reset_count/{id}")
+async def path_device_reset_count(
+    id: int,
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+):
+    _device = db.exec(select(Device).where(Device.id == id)).one_or_none()
+    if not _device:
+        return {"success": False, "msg": "item is not already in database"}
+    if user.username != "root":
+        _p = db.exec(select(Project).where(Project.id == _device.project_id)).one_or_none()
+        if _p.system_user_id != user.id:
+            return {"success": False, "msg": "item is not yours"}
+    try:
+        _device.count_pay = 0
+        db.commit()
+    except Exception as e:
+        print_error(e)
+        return {"success": False, "msg": str(e)}
+    return {"success": True, "msg": "successfully"}
+
+
 @router_api.delete("/device/{id}")
 async def path_delete_device(
     id: int,
@@ -244,3 +267,95 @@ async def path_delete_device(
         print_error(e)
         return {"success": False, "msg": str(e)}
     return {"success": True, "msg": "successfully"}
+
+
+# ****************************************************************************************************************************************
+
+
+@router_api.post("/ota_getlist/")
+async def path_post_ota_getlist(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+):
+    dir_path = "./static/ota"
+    # list to store files
+    ota_list = []
+
+    # Iterate directory
+    for path in os.listdir(dir_path):
+        # check if current path is a file
+        if os.path.isfile(os.path.join(dir_path, path)):
+            tm = datetime.fromtimestamp(os.path.getmtime(os.path.join(dir_path, path)))
+            ota_file = {"file_name": path, "timestamp": tm}
+            ota_list.append(ota_file)
+
+    return {"success": True, "msg": "successfully", "data": ota_list}
+
+
+@router_api.post("/ota_upload_file/")
+async def path_post_ota_upload_file(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+    ota_file: UploadFile = File(...),
+):
+    dir_path = "./static/ota"
+    # list to store files
+    file_location = f"{dir_path}/{ota_file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(ota_file.file.read())
+    return {"success": True, "msg": "successfully", "data": ota_file}
+
+
+@router_api.post("/ota_remove_file/")
+async def path_post_ota_ota_remove_file(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+    file_name: str = Form(...),
+):
+    dir_path = "./static/ota"
+
+    path = os.path.join(dir_path, file_name)
+    os.remove(path)
+    return {"success": True, "msg": "successfully"}
+
+
+OTA_URL = "https://local.pksofttech.org/static/ota/"
+
+
+@router_api.post("/ota_upload_to_devices/")
+async def path_post_ota_upload_to_devices(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+    file_ota: str = Form(...),
+    devices: str = Form(...),
+):
+    devices_ota = devices.split(",")
+    result = 0
+    error = None
+    for device_ota in devices_ota:
+        if device_ota:
+            _device = db.query(Device).where(Device.sn == device_ota).one_or_none()
+            if _device:
+                try:
+                    publish: str = f"/ota/{device_ota}"
+                    d = {
+                        "ota": "on",
+                        "ver": file_ota,
+                        "url": f"{OTA_URL}{file_ota}",
+                    }
+                    msg_json = json.dumps(d)
+                    print(publish)
+                    fast_mqtt.publish(publish, msg_json)
+                    result += 1
+                except Exception as e:
+                    print_error(e)
+                    error = f"{device_ota} : {e}"
+                    break
+            else:
+                error = f"{device_ota} : not found in device database !..."
+                break
+
+    if error:
+        return {"success": False, "msg": error}
+
+    return {"success": True, "msg": f"OTA MQTT device successfully ({result})"}

@@ -49,8 +49,11 @@
                             </button>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item text-primary">
-                                    <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b>
+                                    <b><i class="fa-brands fa-bitcoin"></i> รายรับ(Counter)</b>
                                     <p class="float-right">{{device.pay}}</p>
+                                    <button onclick="reset_counter('{{device.id}}')" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-rotate"></i>
+                                    </button>
                                 </li>
                                 <li class="list-group-item text-warning">
                                     <b><i class="fa-regular fa-clock"></i> Service Hour</b>
@@ -60,14 +63,14 @@
                                     <b><i class="fa-regular fa-clock"></i> On Services</b>
                                     <p class="float-right">{{device.on}}</p>
                                 </li>
-                                <li class="list-group-item text-info">
+                                <!-- <li class="list-group-item text-info">
                                     <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b>
                                     <p class="float-right">{{device.ps}}</p>
                                 </li>
                                 <li class="list-group-item text-info">
                                     <b><i class="fa-regular fa-clock"></i> ปริมาณโฟม</b>
                                     <p class="float-right">{{device.vf}}</p>
-                                </li>
+                                </li> -->
                                 <li class="list-group-item">
                                     <a role="button" href="/dashboard_device/?id={{device.id}}" class="float-right">More...</a>
                                     <button onclick="remove_device('{{device.id}}')" class="btn btn-sm btn-outline-danger">
@@ -101,31 +104,25 @@
 
                         <span class="info-box-icon bg-gradient-secondary elevation-1 "><i class="fas fa-mobile-screen-button"></i></span>
                         <div class="info-box-content">
-                            <h3 class="profile-username text-center text-gray">Device demo</h3>
-                            <div class="text-secondary text-sm text-center m-1">{{device.last_heartbeat}}</div>
+
+                            <h3 class="profile-username text-center text-gray">{{device.name}}</h3>
+                            <h3 class="profile-username text-center text-gray">{{device.sn}}</h3>
+                            <div class="text-gray text-sm text-center m-1">{{device.last_heart_beat}}</div>
+                            <div class="text-gray text-sm text-center m-1">Project ID:{{device.project_id}}</div>
+                            <button onclick="edit_device('{{device.id}}')" class="btn btn-sm btn-outline-warning">
+                                Edit <i class="fas fa-edit"></i>
+                            </button>
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item text-secondary">
                                     <b><i class="fa-brands fa-bitcoin"></i> รายรับ</b>
-                                    <p class="float-right">xxx</p>
+                                    <p class="float-right">{{device.pay}}</p>
                                 </li>
                                 <li class="list-group-item text-secondary">
                                     <b><i class="fa-regular fa-clock"></i> Service Hour</b>
-                                    <p class="float-right">3.5</p>
+                                    <p class="float-right"></p>
                                 </li>
-                                <li class="list-group-item text-secondary">
-                                    <b><i class="fa-regular fa-clock"></i> On Services</b>
-                                    <p class="float-right">-</p>
-                                </li>
-                                <li class="list-group-item text-secondary">
-                                    <b><i class="fa-regular fa-clock"></i> แรงดันน้ำ</b>
-                                    <p class="float-right">ปกติ</p>
-                                </li>
-                                <li class="list-group-item text-secondary">
-                                    <b><i class="fa-regular fa-clock"></i> ปริมาณโฟม</b>
-                                    <p class="float-right">ปกติ</p>
-                                </li>
+
                                 <li class="list-group-item">
-                                    <a role="button" href="/dashboard_device/?id=1234" class="float-right">View dashboard</a>
                                     <button onclick="remove_device('{{device.id}}')" class="btn btn-sm btn-outline-danger">
                                         <i class="fas fa-trash-can"></i>
                                     </button>
@@ -272,6 +269,7 @@
         }
     }
 
+
     async function submit_device() {
         const device_name = document.getElementById("device_name").value;
         const device_sn = document.getElementById("device_sn").value;
@@ -330,6 +328,35 @@
 
     }
 
+
+    async function reset_counter(id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "กรุณายืนยันการ Reset Count ตู้ : ID " + id,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, (ตกลง)!'
+        });
+        if (result.isConfirmed) {
+            const _reply = await fetchApi("/api_model/device_reset_count/" + id, "post", null, "json");
+            if (_reply.success) {
+                Swal.fire(
+                    'Success!',
+                    'ระะบบดำเนินการลบข้อมูลเรียบร้อยแล้ว',
+                    'success'
+                );
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "unsuccessful",
+                    html: _reply.msg,
+                });
+            }
+        }
+    }
 </script>
 
 </html>

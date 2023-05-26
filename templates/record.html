@@ -31,13 +31,13 @@
 					<div class="card-header p-0 border-bottom-0">
 						<ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
 							<li class="nav-item">
-								<a class="nav-link" id="custom-tabs-four-Systems_user-tab" data-toggle="pill" onclick="view_table_of_qr_code_payment()"
+								<a class="nav-link" id="custom-tabs-four-Systems_user-tab" data-toggle="pill" onclick="view_table_of_log_pay()"
 									href="#custom-tabs-four-Systems_user" role="tab" aria-controls="custom-tabs-four-Systems_user" aria-selected="false">รายรับ</a>
 							</li>
-							<li class="nav-item">
+							<!-- <li class="nav-item">
 								<a class="nav-link" id="custom-tabs-four-Gate_access-tab" data-toggle="pill" onclick="view_table_of_qr_code_generator()"
 									href="#custom-tabs-four-Gate_access" role="tab" aria-controls="custom-tabs-four-Gate_access" aria-selected="false">สถานะ</a>
-							</li>
+							</li> -->
 						</ul>
 					</div>
 
@@ -48,23 +48,26 @@
 									<div class="card-header">
 										<h3 class="card-title p-4 ">PAYMENT RECORD</h3>
 										<div class="form-group">
-											<select class="form-control" id="view-table-of-bank-name" onchange="view_table_of_qr_code_payment()">
-												{% for b in banks %}
-												<option>{{b}}</option>
+											<select class="form-control" id="view-table-of-project" onchange="view_table_of_log_pay()">
+												{% for p in projects %}
+												{% if project_id == p.id %}
+												<option selected value="{{p.id}}">{{p.name}}</option>
+												{% else %}
+												<option value="{{p.id}}">{{p.name}}</option>
+												{% endif %}
 												{% endfor %}
 											</select>
 										</div>
 										<div class=" input-group">
 											<input type="text" class="form-control form-control-sm" id="reservationtime" placeholder="Type your keywords here" value=""
-												onchange="view_table_of_qr_code_payment(this.value)" />
+												onchange="view_table_of_log_pay(this.value)" />
 										</div>
 									</div>
 									<div class="card-body">
-										<table class="table" id="table-qr-code-payment-record">
+										<table class="table" id="table_log_pay_record">
 											<tfoot>
 												<tr>
-
-													<th colspan="7" class="bg-primary" style="text-align:right">Total:</th>
+													<th colspan="1" class="bg-primary" style="text-align:right">Total:</th>
 													<th></th>
 
 												</tr>
@@ -74,180 +77,62 @@
 
 								</div>
 							</div>
-							<div class="tab-pane fade" id="custom-tabs-four-Gate_access" role="tabpanel" aria-labelledby="custom-tabs-four-Gate_access-tab">
-								<div class="card">
-									<div class="card-header">
-										<h3 class="card-title p-4 ">Device Status</h3>
-										<div class="form-group">
-											<select class="form-control" id="view-table-of-bank-name-for-qr-gen" onchange="view_table_of_qr_code_generator()">
-												{% for b in banks %}
-												<option>{{b}}</option>
-												{% endfor %}
-											</select>
-										</div>
-										<div class=" input-group">
-											<input type="text" class="form-control form-control-sm" id="reservationtime-for-qr-gen" placeholder="Type your keywords here" value=""
-												onchange="view_table_of_qr_code_generator(this.value)" />
-										</div>
-									</div>
-									<div class="card-body">
-										<table class="table table-striped" id="table-qr-code-generator-record">
 
-										</table>
-									</div>
-								</div>
-							</div>
 						</div>
 					</div>
-					<!-- /.card -->
 				</div>
+				<!-- /.card -->
 			</div>
-
-
-
 		</div>
-		{% include '_footer.html' %}
+
+
+
+	</div>
+	{% include '_footer.html' %}
 	</div>
 
 </body>
 {% include '_script.html' %}
 
 <script>
-
-	async function info_Qr_Code_Pay(id) {
-		const _reply = await fetchApi(`/api/qr_code_payment/info/${id}`, "get", null, "json");
-		if (!!_reply) {
-			debug(_reply)
-			let html = "";
-			let _lis = "";
-			const _d = _reply;
-			for (var k in _d) {
-				const l = `
-				<tr>
-					<td class="text-left">${k}</td>
-					<td class="text-right"><span class="tag tag-success">${_d[k]}</span></td>
-				</tr>
-				`;
-				const _v = `${k}\t:\t${_d[k]}`;
-				_lis += l + "\n";
-			}
-
-
-
-			html = `
-			<table class="table table-hover text-nowrap">
-				<thead>
-					<tr>
-						<th>data</th>
-						<th>msg</th>
-						</tr>
-					</thead>
-				<tbody>
-					${_lis}
-				</tbody>
-				</table>
-			`;
-
-			Swal.fire({
-				icon: "info",
-				width: "60%",
-				title: "qr payment id:" + id,
-				html: html,
-			})
-		}
-	}
-
-	async function view_table_of_qr_code_payment(date_range = null) {
-		if (typeof view_table_of_qr_code_payment.table_date_range == 'undefined') {
-			view_table_of_qr_code_payment.table_date_range = date_range;
+	async function view_table_of_log_pay(date_range = null) {
+		if (typeof view_table_of_log_pay.table_date_range == 'undefined') {
+			view_table_of_log_pay.table_date_range = date_range;
 			return;
 		}
-		if (date_range) { view_table_of_qr_code_payment.table_date_range = date_range; }
+		if (date_range) { view_table_of_log_pay.table_date_range = date_range; }
 
-		debug(view_table_of_qr_code_payment.table_date_range)
-		const table_view_id = "table-qr-code-payment-record";
-		const ajax_request_data_path = "/api/qr_code_payment/datatable";
-		const bank_name = document.getElementById("view-table-of-bank-name").value;
-		debug(bank_name)
+		debug(view_table_of_log_pay.table_date_range)
+		const ajax_request_data_path = "/api/log_pay/datatable/";
+		const project_id = document.getElementById("view-table-of-project").value;
+		debug(project_id)
 		const columns_table = [
 			{
-				data: "Qr_Code_Pay.id",
-				title: "ID",
-				name: "ID",
-				render: function (data, type) {
-					//return String(data).padStart(5, "0");
-					return `<button onclick="info_Qr_Code_Pay(${data});"  role="button" class="btn btn-outline-success btn-sm">${String(data).padStart(5, "0")}</button>`;
-				},
+				data: "name",
+				title: "ชื่อ ตู้",
+			},
+			{
+				data: "time",
+				title: "วัน-เวลา",
+			},
+			{
+				data: "amount",
+				title: "ยอดเงิน",
+			},
+			{
+				data: "type",
+				title: "ประเภท",
 			},
 
-			{
-				data: "Device_Qr.type",
-				title: "Type",
-				orderable: false,
 
-				render: function (data, type, row) {
-					const Device_Qr = row.Device_Qr;
-					let id = "no id";
-					if (Device_Qr) {
-						id = Device_Qr.id;
-					} else {
-						return "No Device";
-					}
-
-					if (data == "ESP32_QR_CODE_MQTT") {
-						return `<a href="/device?device_id=${id}" role="button" class="btn btn-outline-danger btn-sm">${data}</a>`;
-					}
-					return `<a href="/device?device_id=${id}"  role="button" class="btn btn-outline-success btn-sm">${data}</a>`;
-				},
-			},
-			{
-				data: "Qr_Code_Pay.transactionDateandTime",
-				title: "transactionDateandTime",
-			},
-			{
-				data: "Qr_Code_Pay.billPaymentRef1",
-				title: "billPaymentRef1",
-			},
-			{
-				data: "Qr_Code_Pay.billPaymentRef2",
-				title: "billPaymentRef2",
-			},
-			{
-				data: "Qr_Code_Pay.billPaymentRef3",
-				title: "billPaymentRef3",
-			},
-			{
-				data: "Qr_Code_Pay.payerName",
-				title: "payerName",
-			},
-			{
-				data: "Qr_Code_Pay.amount",
-				title: "amount",
-			},
-			{
-				data: "Qr_Code_Pay.qr_code_id",
-				title: "qr_code_id",
-				render: function (data, type) {
-					if (!data) {
-						return "No qr";
-					}
-					const _link = String(data).padStart(5, "0");
-					return `<a role="button" class="btn btn-outline-info btn-sm">${_link}</a>`;
-				},
-			},
 		];
 
-		// debug(columns_table)
+		//debug(columns_table)
 		headers = await get_headers();
-		let data_table_view = $("#" + table_view_id).DataTable({
+
+		let data_table_view = $("#table_log_pay_record").DataTable({
 			dom: "Bfrtipl",
 			buttons: [
-				{
-					text: "Word",
-					action: function (e, dt, node, config) {
-						ExportToDoc(table_view_id);
-					},
-				},
 				"csv",
 				"excel",
 				"print",
@@ -255,7 +140,6 @@
 			],
 			destroy: true,
 			autoWidth: false,
-			lengthMenu: [10, 25, 50, 100, 500, 1000],
 			pageLength: 10,
 			scrollY: "50vh",
 			scrollCollapse: true,
@@ -263,7 +147,7 @@
 			// "paging": false
 			// data: dataSet,
 			columns: columns_table,
-			order: [[0, "desc"]],
+			order: [[1, "desc"]],
 			processing: true,
 			serverSide: true,
 			search: {
@@ -274,10 +158,11 @@
 				type: "GET",
 				url: ajax_request_data_path,
 				data: function (d) {
-					d.date_range = view_table_of_qr_code_payment.table_date_range;
-					d.bank_name = bank_name;
+					d.date_range = view_table_of_log_pay.table_date_range;
+					d.project_id = project_id;
 				},
 			},
+
 			footerCallback: function (row, data, start, end, display) {
 				debug("footerCallback")
 				let api = this.api();
@@ -289,23 +174,17 @@
 
 				// Total over all pages
 				total = api
-					.column(7)
+					.column(2)
 					.data()
 					.reduce(function (a, b) {
 						return intVal(a) + intVal(b);
 					}, 0);
 
-				// Total over this page
-				pageTotal = api
-					.column(7, { page: 'current' })
-					.data()
-					.reduce(function (a, b) {
-						return intVal(a) + intVal(b);
-					}, 0);
+
 
 				// Update footer
 				//$(api.column(0).footer()).html('$' + pageTotal + ' ( $' + total + ' total)');
-				$(api.column(2).footer()).html(`Total: ${pageTotal}`);
+				$(api.column(1).footer()).html(`: ${total}`);
 
 			},
 
@@ -313,110 +192,7 @@
 	}
 </script>
 
-<script>
 
-	async function view_table_of_qr_code_generator(date_range = null) {
-		if (typeof view_table_of_qr_code_generator.table_date_range == 'undefined') {
-			view_table_of_qr_code_generator.table_date_range = date_range;
-			return;
-		}
-		if (date_range) { view_table_of_qr_code_generator.table_date_range = date_range; }
-
-		debug(view_table_of_qr_code_generator.table_date_range)
-		const table_view_id = "table-qr-code-generator-record";
-		const ajax_request_data_path = "/api/router_qr_code_generator/datatable";
-		const bank_name = document.getElementById("view-table-of-bank-name-for-qr-gen").value;
-		debug(bank_name)
-		const columns_table = [
-			{
-				data: "Qr_Code.id",
-				title: "ID",
-				name: "ID",
-				render: function (data, type) {
-					return String(data).padStart(5, "0");
-				},
-			},
-			{
-				data: "Qr_Code.createDate",
-				title: "createDate",
-			},
-			{
-				data: "Qr_Code.REF1",
-				title: "REF1",
-			},
-			{
-				data: "Qr_Code.REF2",
-				title: "REF2",
-			},
-			{
-				data: "Qr_Code.REF3",
-				title: "REF3",
-			},
-
-			{
-				data: "Qr_Code.amount",
-				title: "amount",
-			},
-			{
-				data: "Device_Qr.name",
-				title: "Device_Qr",
-				render: function (data, type) {
-					return `<a href="/device" class="">${data}</a>`;
-				},
-			},
-			{
-				data: "count_of_qr_pay",
-				title: "count_of_qr_pay",
-				render: function (data, type) {
-					return `<h3><span class="badge badge-success">${data}</span></h3> `;
-				},
-			},
-		];
-
-		// debug(columns_table)
-		headers = await get_headers();
-		let data_table_view = $("#" + table_view_id).DataTable({
-			dom: "Bfrtipl",
-			buttons: [
-				{
-					text: "Word",
-					action: function (e, dt, node, config) {
-						ExportToDoc(table_view_id);
-					},
-				},
-				"csv",
-				"excel",
-				"print",
-				"colvis",
-			],
-			destroy: true,
-			autoWidth: false,
-			lengthMenu: [10, 25, 50, 100, 500, 1000],
-			pageLength: 10,
-			scrollY: "50vh",
-			scrollCollapse: true,
-			sScrollX: "100%",
-			// "paging": false
-			// data: dataSet,
-			columns: columns_table,
-			order: [[0, "desc"]],
-			processing: true,
-			serverSide: true,
-			search: {
-				return: true,
-			},
-			ajax: {
-				headers: headers,
-				type: "GET",
-				url: ajax_request_data_path,
-				data: function (d) {
-					d.date_range = view_table_of_qr_code_generator.table_date_range;
-					d.bank_name = bank_name;
-				},
-			},
-		});
-	}
-</script>
 
 <script>
 	$("#reservationtime").daterangepicker({

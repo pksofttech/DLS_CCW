@@ -40,6 +40,14 @@
 									aria-selected="false">ผู้ใช้ระบบ</a>
 							</li>
 							<li class="nav-item">
+								<a class="nav-link" id="tabs-tabs_panel_mqtt" data-toggle="pill" href="#tabs_panel_mqtt" role="tab" aria-controls="tabs_panel_mqtt"
+									aria-selected="false">Mqtt Log</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" id="tabs-tabs_panel_ota" data-toggle="pill" onclick="ota_tab()" href="#tabs_panel_ota" role="tab" aria-controls="tabs_panel_ota"
+									aria-selected="false">OTA</a>
+							</li>
+							<li class="nav-item">
 								<a class="nav-link" id="tabs-panel02-tab" data-toggle="pill" href="#tabs-panel02" role="tab" aria-controls="tabs-panel02"
 									aria-selected="false">About...</a>
 							</li>
@@ -62,7 +70,24 @@
 										</table>
 									</div>
 
+
 								</div>
+							</div>
+							<div class="tab-pane fade" id="tabs_panel_mqtt" role="tabpanel" aria-labelledby="tabs-tabs_panel_mqtt">
+
+								<iframe id="grafana_frame" class="w-100 border rounded-lg border-dark" height="800"
+									src="https://grafana.devdls.com/d/uUKUFDwVz/mqtt-log?orgId=1&refresh=5s&from=1684861200000&to=1684947599999&theme=dark&kiosk"
+									title="description"></iframe>
+
+							</div>
+							<div class="tab-pane fade" id="tabs_panel_ota" role="tabpanel" aria-labelledby="tabs-tabs_panel_ota">
+								<button type="button" class="btn btn-block btn-outline-info btn-sm" onclick="ota_upload_file()">UPLOAD FILE OTA</button>
+
+								<div id="ota_list_content">
+
+								</div>
+
+
 							</div>
 							<div class="tab-pane fade" id="tabs-panel02" role="tabpanel" aria-labelledby="tabs-panel02-tab">
 								<div class="card">
@@ -168,6 +193,59 @@
 	{% include '_footer.html' %}
 	</div>
 
+	<div class="modal fade " id="modal_upload_file_ota" style="display: none;" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Upload file ota</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="card-body">
+						<div>
+							<input type="file" class="btn btn-block  btn-outline-warning" id="ota_file_upload" accept=".bin" />
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="m-2 btn btn-block btn-outline-success" onclick="submit_upload_file_ota()">Upload File</button>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="modal fade " id="modal_ota_to_device" style="display: none;" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog ">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">OTA TO DEVICES</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="card-body">
+						<div class="form-group">
+							<label>Devices(sreial number,...)</label>
+							<input type="text" class="form-control" id="ota_to_devices" placeholder="sn01,sn02,sn03" value="m_ccw111">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="m-2 btn btn-block btn-outline-success" onclick="submit_ota_to_devices()"><span class="badge bg-danger"
+							id="ota_file_name_btn">xxxx</span> OTA Devices</button>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
 </body>
 {% include '_script.html' %}
 
@@ -241,12 +319,6 @@
 		let system_user_table = $("#system_user_table").DataTable({
 			dom: "Bfrtipl",
 			buttons: [
-				{
-					text: "Word",
-					action: function (e, dt, node, config) {
-						ExportToDoc("system_user_table");
-					},
-				},
 				"csv",
 				"excel",
 				"print",
@@ -464,6 +536,151 @@
 		});
 
 	});
+</script>
+
+<script>
+	async function ota_tab() {
+		console.log("ota_tab");
+		const _reply = await fetchApi("/api_model/ota_getlist/", "post", null, "json");
+		if (_reply.success) {
+			const _d = _reply.data;
+			//console.log(_d);
+			const ota_list_content = document.getElementById("ota_list_content");
+			ota_list_content.innerHTML = "";
+			let html_c_ota = "";
+			for (const e of _d) {
+				//console.log(e);
+				const file_name = e.file_name;
+				const timestamp = e.timestamp;
+				html_c_ota += `<div class="info-box">
+					<span class="info-box-icon bg-warning"><i class="far fa-copy"></i></span>
+					<div class="info-box-content">
+					<span class="info-box-text">${file_name} <span class="badge bg-danger">${timestamp}</span></span>
+					<button type="button" class="btn btn-block btn-outline-danger btn-sm" onclick="ota_remove_file('${file_name}')">REMOVE</button>
+					<button type="button" class="btn btn-block btn-outline-warning btn-sm" onclick="ota_to_devices('${file_name}')">OTA TO DEVICES</button>
+					</div>
+					</div>`;
+			}
+
+			ota_list_content.innerHTML = html_c_ota;
+		}
+	}
+
+	async function ota_upload_file() {
+		$('#modal_upload_file_ota').modal('show');
+	}
+
+	async function submit_upload_file_ota() {
+		const upload_file = document.getElementById("ota_file_upload");
+		if (upload_file.value == "") {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Something went wrong!(ข้อมูลไม่ครบ...)',
+				footer: 'CCW'
+			})
+			return;
+		}
+
+		console.log(upload_file.value);
+		const formData = new FormData();
+		formData.append("ota_file", upload_file.files[0]);
+		debug("form is already uploaded file")
+
+		debug_form(formData)
+
+		const _reply = await fetchApi("/api_model/ota_upload_file/", "post", formData, "json");
+		if (_reply.success) {
+			Swal.fire({
+				icon: "info",
+				title: "Successful",
+				html: _reply.msg,
+			}).then(() => {
+				ota_tab();
+				$('#modal_upload_file_ota').modal('hide');
+
+			});
+		}
+	}
+
+
+	async function ota_remove_file(file_name) {
+		let result = await Swal.fire({
+			title: 'Do you is Confirm Remove :' + file_name + ' ?',
+			showDenyButton: true,
+			confirmButtonText: 'Yes (ตกลง)',
+			denyButtonText: `No (ไม่ต้องการ)`,
+		});
+
+		if (result.isConfirmed) {
+			const formData = new FormData();
+			formData.append("file_name", file_name);
+			const _reply = await fetchApi("/api_model/ota_remove_file/", "post", formData, "json");
+			if (_reply.success) {
+				Swal.fire({
+					icon: "info",
+					title: "Successful",
+					html: _reply.msg,
+				}).then(() => {
+					ota_tab();
+
+				});
+			}
+		}
+
+	}
+
+	let ota_file_name = "";
+	async function ota_to_devices(_ota_file_name) {
+		ota_file_name = _ota_file_name;
+		document.getElementById("ota_file_name_btn").innerHTML = ota_file_name;
+		$('#modal_ota_to_device').modal('show');
+	}
+
+	async function submit_ota_to_devices() {
+		const ota_to_devices = document.getElementById("ota_to_devices").value;
+		if (ota_to_devices == "") {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Something went wrong!(ข้อมูลไม่ครบ...)',
+				footer: 'CCW'
+			})
+			return;
+		}
+		let result = await Swal.fire({
+			title: 'Do you is Confirm OTA UPLOAD ?',
+			text: 'ota:' + ota_file_name,
+			showDenyButton: true,
+			confirmButtonText: 'Yes (ตกลง)',
+			denyButtonText: `No (ไม่ต้องการ)`,
+		});
+
+		if (result.isConfirmed) {
+			const formData = new FormData();
+			formData.append("file_ota", ota_file_name);
+			formData.append("devices", ota_to_devices);
+			const _reply = await fetchApi("/api_model/ota_upload_to_devices/", "post", formData, "json");
+			if (_reply.success) {
+				console.log(_reply.msg);
+				Swal.fire({
+					icon: "info",
+					title: "Successful",
+					html: _reply.msg,
+				}).then(() => {
+					//ota_tab();
+
+				});
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: "Error",
+					html: _reply.msg,
+				})
+			}
+		}
+	}
+
 </script>
 
 </html>

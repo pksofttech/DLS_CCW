@@ -18,7 +18,7 @@ from app.core.auth import access_cookie_token, get_current_user, get_password_ha
 
 # from sqlalchemy import or_
 # from sqlalchemy.orm import Session
-from app.core.database import System_User, create_session
+from app.core.database import Log_pay, Project, System_User, create_session
 
 from ..stdio import *
 
@@ -26,6 +26,7 @@ DIR_PATH = config.DIR_PATH
 
 # ****************************************************************************************************************************************
 router_systems_user = APIRouter(prefix="/api/systems_user")
+router_log_pay = APIRouter(prefix="/api/log_pay")
 
 
 @router_systems_user.get("/")
@@ -188,3 +189,91 @@ async def path_systems_user_get_datatable(
 
 
 # ****************************************************************************************************************************************
+
+
+# ? ****************************************************************************************************************************************
+
+
+@router_log_pay.get("/datatable")
+async def path_systems_user_get_datatable(
+    req_para: Request,
+    date_range: str = None,
+    project_id: int = None,
+    user=Depends(get_current_user),
+    db: Session = Depends(create_session),
+):
+    try:
+        d_start, d_end = date_range.split(" - ")
+        d_start = d_start.replace("/", "-")
+        d_end = d_end.replace("/", "-")
+
+    except ValueError as e:
+        return {"success": False, "msg": str(e)}
+
+    _table = Log_pay
+
+    params = dict(req_para.query_params)
+    select_columns = set()
+    for k in params:
+        # print(f"{k}:{params[k]}")
+        match = re.search(r"^columns\[.*\]\[data\]", k)
+        if match:
+            select_columns.add(f"{params[k]}")
+    # print(select_columns)
+    order_by_col = params["order[0][column]"]
+    order_by_column = params.get(f"columns[{order_by_col}][data]")
+    order_dir = params["order[0][dir]"]
+
+    limit = params["length"]
+    skip = params["start"]
+    condition = ""
+    search = params["search[value]"]
+
+    _order_columns = _table.time
+    if order_by_column:
+        _order_columns = getattr(_table, order_by_column, _table.id)
+
+    print(f"order_by_column : {order_by_column}")
+    rows = []
+    condition = True
+
+    if search:
+        try:
+            s_amount = int(search)
+            condition = or_(
+                _table.amount == f"{s_amount}",
+            )
+        except ValueError:
+            pass
+            condition = or_(
+                _table.name.like(f"%{search}%"),
+                _table.sn.like(f"%{search}%"),
+                _table.type.like(f"%{search}%"),
+                # _table.amount.like(f"%{search}%"),
+            )
+    # print_success(condition)
+    _order_by = _order_columns.asc() if order_dir == "asc" else _order_columns.desc()
+    # ? ----------------------- select ---------------------------------------!SECTION
+    # print_success(project_name)
+    # _p: Project = db.exec(select(Project).where(Project.name == project_name)).one_or_none()
+
+    sql = select(_table).where(_table.time.between(d_start, d_end))
+    # sql = sql.outerjoin(Qr_Code, (_table.qr_code_id == Qr_Code.id))
+    # sql = sql.outerjoin(Device_Qr, (Qr_Code.device_qr_id == Device_Qr.id))
+    # sql = sql.join(Bank, (_table.billPaymentRef3 == Bank.REF3))
+    if project_id:
+        sql = sql.where(_table.project_id == project_id)
+
+    recordsTotal = db.exec(select([func.count()]).select_from(sql)).one()
+
+    if search:
+        _sql = sql.where(condition)
+        recordsFiltered = db.exec(select([func.count()]).select_from(_sql)).one()
+    else:
+        recordsFiltered = recordsTotal
+
+    _sql = sql.where(condition).order_by(_order_by).offset(skip).limit(limit)
+    rows = db.exec(_sql).all()
+    # print(rows)
+
+    return {"draw": params["draw"], "recordsTotal": recordsTotal, "recordsFiltered": recordsFiltered, "data": rows}

@@ -35,7 +35,7 @@
             </div>
 
             <iframe id="grafana_frame" class="w-100 border rounded-lg border-dark" height="800"
-                src="https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&from=1681858035446&to=1681879635446&theme=dark&kiosk&project_id={{project_id}}"
+                src="https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&from=1681858035446&to=1681879635446&theme=dark&kiosk&var-project_id={{project_id}}"
                 title="description"></iframe>
 
             <!-- ? ************************************************************************************************************************ -->
@@ -48,8 +48,9 @@
 
 <script>
     function on_select_project_chang(v) {
-        debug(v);
-        document.getElementById('grafana_frame').src = document.getElementById('grafana_frame').src
+        //debug(v);
+        document.getElementById('grafana_frame').src = `https://grafana.devdls.com/d/a3pJZcP4k/dashboard-main?orgId=1&theme=dark&kiosk&var-project_id=${v}`
+        debug(document.getElementById('grafana_frame').src);
         toastMixin.fire({
             //position: 'top',
             title: "<h5 style='color:black'>" + "Select project :" + v + "</h5>",

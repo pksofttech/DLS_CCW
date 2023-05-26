@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional
 
 from sqlmodel import Field, Relationship, Session, SQLModel, create_engine, delete, select
@@ -104,6 +105,7 @@ class Device(SQLModel, table=True):
     price_rates: str = Field(default="")
     status: str = Field(default="")
     remark: str = Field(default="")
+    count_pay: int = Field(default=0)
     project_id: Optional[int] = Field(foreign_key="project.id", nullable=False)
 
 
@@ -123,14 +125,23 @@ class Log_mqtt(SQLModel, table=True):
     message: str = Field(nullable=False)
 
 
+class Log_pay(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    time: datetime
+    amount: int = Field(nullable=False)
+    sn: str = Field(nullable=False)
+    name: str = Field(nullable=False)
+    type: str = Field(nullable=False)
+    device_id: Optional[int] = Field(foreign_key="device.id", nullable=False)
+    project_id: Optional[int] = Field(foreign_key="project.id", nullable=False)
+
+
 # with Session(engine) as session:
 #     pass
 #     sql = "ALTER TABLE bank ADD bank_type VARCHAR DEFAULT 'scb_payment'"
 #     session.execute(sql)
 
 # Base.metadata.create_all(engine)
-# SQLModel.metadata.drop_all(engine)
-# SQLModel.metadata.create_all(engine)
 
 
 def set_drop_table():
@@ -151,20 +162,12 @@ print_success("import success module database.py")
 from .auth import get_password_hash
 
 
-async def seve_to_log_mqtt(data: dict):
-    try:
-        with Session(engine) as session:
-            _log_mqtt = Log_mqtt(**data)
-            _log_mqtt.time = time_now()
-            session.add(_log_mqtt)
-            session.commit()
-        print_success("seve_to_log_mqtt")
-    except Exception as err:
-        print_error(f"seve_to_log_mqtt exception : {err}")
+# SQLModel.metadata.drop_all(engine)
+# SQLModel.metadata.create_all(engine)
 
 
 async def set_init_database():
-    return
+    # return
     print_success("set_init_database")
 
     with Session(engine) as session:
@@ -184,7 +187,7 @@ async def set_init_database():
             root_user.user_level = "root"
             session.add(root_user)
             session.commit()
-            user_demo = ["demo", "ccw"]
+            user_demo = ["ตลาดธีรรัตน์", "ccw"]
             for i in user_demo:
                 _u = System_User()
                 _u.username = i
@@ -199,28 +202,26 @@ async def set_init_database():
                 print_warning(f"add user for test :{_u.username}")
             session.commit()
         else:
+            return 0
             _root.user_level = "root"
             _root.status = "Enable"
             session.commit()
 
         rows = session.exec(select(Project)).all()
         if not rows:
-            statement = select(System_User).where(System_User.username == "demo")
-            demo: System_User = session.exec(statement).one()
-
             p = Project()
-            p.name = "Project Demo 01"
-            p.system_user_id = demo.id
+            p.name = "Project ตลาดธีรรัตน์"
+            p.system_user_id = 2
             p.status = "Demo"
-            p.staff = "mr.demo"
-            p.address = "123/456 demonstrating"
+            p.staff = "mr.ตลาดธีรรัตน์"
+            p.address = "123/456 ตลาดธีรรัตน์"
             p.phone = "02-123-4567"
             # p.pictureUrl = "/static/image/logo.png"
             session.add(p)
 
             p = Project()
             p.name = "Project Demo 02"
-            p.system_user_id = demo.id
+            p.system_user_id = 3
             p.status = "Demo"
             p.staff = "mr.demo"
             p.address = "123/456 demonstrating"
@@ -243,8 +244,8 @@ async def set_init_database():
         rows = session.exec(select(Device)).all()
         if not rows:
             d = Device(
-                sn="sn_demo-001",
-                name="demo-001",
+                sn="m_oum001",
+                name="ตู้ ตลาดธีรรัตน์ 001",
                 project_id=1,
                 create_by="System for test",
                 status="demo",
@@ -255,8 +256,20 @@ async def set_init_database():
             print_success(d)
 
             d = Device(
-                sn="sn_demo-002",
-                name="demo-002",
+                sn="m_oum002",
+                name="ตู้ ตลาดธีรรัตน์ 002",
+                project_id=1,
+                create_by="System for test",
+                status="demo",
+                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+            )
+            session.add(d)
+            session.commit()
+            print_success(d)
+
+            d = Device(
+                sn="test_001",
+                name="ทดสอบ test_001",
                 project_id=2,
                 create_by="System for test",
                 status="demo",
@@ -269,3 +282,66 @@ async def set_init_database():
         rows = session.exec(select(Device)).all()
         print_success(rows)
     print_success("set_init_database successfully")
+
+
+# ? *************************************************************************************************!SECTION
+async def process_mqtt_data(data: dict):
+    sn = data.get("sn", None)
+    topic = data.get("topic", None)
+    message = data.get("message", None)
+    json_msg = json.loads(message)
+    try:
+        _now = time_now()
+        with Session(engine) as session:
+            # print_success(sn)
+            _device: Device = session.query(Device).where(Device.sn == sn).one_or_none()
+
+            if _device:
+                if topic == "info":
+                    pass
+                elif topic == "heartbeat":
+                    pass
+                elif topic == "getmoney":
+                    _pay = json_msg.get("amount", 0)
+                    _type = json_msg.get("type", "-")
+                    _device.count_pay += _pay
+
+                    if _type == "BV20":
+                        _type = "ธนบัตร"
+                    _log_pay = Log_pay(
+                        time=_now,
+                        sn=sn,
+                        name=_device.name,
+                        amount=_pay,
+                        type=_type,
+                        device_id=_device.id,
+                        project_id=_device.project_id,
+                    )
+                    session.add(_log_pay)
+                    session.commit()
+                else:
+                    print_warning(f"Warning {topic} is not implemented")
+
+                _device.last_heart_beat = _now
+                # print_success(_device)
+                session.commit()
+                # print_success(f"set heartbeat of {sn} : {_device.last_heart_beat}")
+                _log_mqtt = Log_mqtt(
+                    sn=sn,
+                    topic=topic,
+                    message=message,
+                    time=_now,
+                )
+                session.add(_log_mqtt)
+                session.commit()
+
+                print_success(f"seve_to_log_mqtt {topic}:{sn}")
+            else:
+                pass
+                # print_warning(f"Warning {sn} is not in database")
+
+    except Exception as err:
+        print_error(f"seve_to_log_mqtt exception : {err}")
+        return None
+
+    return True

@@ -5,8 +5,6 @@ from statistics import mode
 from fastapi import (
     APIRouter,
     Depends,
-    FastAPI,
-    Form,
     Request,
     Response,
 )
@@ -156,13 +154,15 @@ async def router_dashboard(
             "request": {},
             "user": user,
             "projects": projects,
-            "project_id": project_id,
+            "project_id": project_id if project_id else projects[0].id,
             "now": _now,
         },
     )
 
 
 import random
+
+TIME_OUT_HEARTBEAT = 6000
 
 
 @router_page.get("/device", tags=["public"])
@@ -175,7 +175,7 @@ async def router_device(
         return RedirectResponse(url="/")
     if user.status.lower() == "disable":
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
-    _now = time_now(0)
+    _now = time_now()
 
     devices = []
     project_name = []
@@ -184,40 +184,60 @@ async def router_device(
         devices = db.query(Device).where(Device.project_id == project_id).all()
     else:
         if user.username == "root":
-            project_ids = db.query(Project.id, Project.name).all()
+            project_ids = db.query(Project.id, Project.name).order_by(Project.id).all()
         else:
             project_ids = db.query(Project.id, Project.name).where(Project.system_user_id == user.id).all()
         print(project_ids)
         for project_id in project_ids:
             # print_warning(project_id[1])
             project_name.append(project_id[1])
-            ds = db.query(Device).where(Device.project_id == project_id[0]).all()
+            ds = db.query(Device).where(Device.project_id == project_id[0]).order_by(Device.id).all()
             for d in ds:
                 devices.append(d)
 
     devices_on = []
     devices_off = []
-    print(devices)
+    # print(devices)
     for device in devices:
         d: Device = device
         print(_now)
-        print(d.last_heart_beat)
-        print(_now - d.last_heart_beat)
-        print(d)
-        devices_on.append(
-            {
-                "id": d.id,
-                "pay": random.randint(100, 5000),
-                "name": d.name,
-                "sn": d.sn,
-                "last_heart_beat": d.last_heart_beat,
-                "sh": "OK",
-                "on": "OK",
-                "ps": "OK",
-                "vf": "OK",
-                "project_id": d.project_id,
-            }
-        )
+        _ts_now = int(round(_now.timestamp()))
+        last_heart_beat = d.last_heart_beat + timedelta(hours=7)
+
+        diff_of_heartbeat = _ts_now - last_heart_beat.timestamp()
+        print(diff_of_heartbeat)
+        # print(d)
+        # ? Chack Time_out is device active
+        if diff_of_heartbeat <= TIME_OUT_HEARTBEAT:
+            devices_on.append(
+                {
+                    "id": d.id,
+                    "pay": d.count_pay,
+                    "name": d.name,
+                    "sn": d.sn,
+                    "last_heart_beat": last_heart_beat,
+                    "sh": d.id,
+                    "on": "OK",
+                    "ps": "OK",
+                    "vf": "OK",
+                    "project_id": d.project_id,
+                }
+            )
+        else:
+            devices_off.append(
+                {
+                    "id": d.id,
+                    "pay": d.count_pay,
+                    "name": d.name,
+                    "sn": d.sn,
+                    "last_heart_beat": last_heart_beat,
+                    "sh": "OK",
+                    "on": "OK",
+                    "ps": "OK",
+                    "vf": "OK",
+                    "project_id": d.project_id,
+                }
+            )
 
     return templates.TemplateResponse(
         "device.html",
@@ -267,6 +287,10 @@ async def router_record(db: Session = Depends(create_session), user: System_User
     _now = time_now()
 
     datas = {}
+    if user.username == "root":
+        projects = db.query(Project).all()
+    else:
+        projects = db.query(Project).where(Project.system_user_id == user.id).all()
     return templates.TemplateResponse(
         "record.html",
         {
@@ -274,6 +298,7 @@ async def router_record(db: Session = Depends(create_session), user: System_User
             "user": user,
             "datas": datas,
             "now": _now,
+            "projects": projects,
         },
     )
 
