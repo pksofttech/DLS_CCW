@@ -194,7 +194,7 @@ async def path_systems_user_get_datatable(
 # ? ****************************************************************************************************************************************
 
 
-@router_log_pay.get("/datatable")
+@router_log_pay.get("/datatable/")
 async def path_systems_user_get_datatable(
     req_para: Request,
     date_range: str = None,
