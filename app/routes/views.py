@@ -20,13 +20,10 @@ from sqlalchemy.orm import Session
 from sqlmodel import func, join, select, or_
 from app.core.database import Device, Project, System_User, create_session
 from app.core.auth import access_cookie_token
-from app.service.ksher_pay_sdk import KsherPay
 
 from ..stdio import *
 from app.core import config
 from app.core.auth import get_user
-import qrcode
-from promptpay import qrcode as promptpay_qrcode
 from app.service.mqtt import fast_mqtt
 
 

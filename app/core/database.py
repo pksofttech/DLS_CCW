@@ -1,3 +1,4 @@
+import os
 import json
 from typing import List, Optional
 
@@ -24,9 +25,10 @@ from ..stdio import *
 # engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # For postgres DB
-SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@47.254.250.76/ccw"
-SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@172.17.0.18/ccw"
-SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@157.230.246.160/ccw"
+# SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@47.254.250.76/ccw"
+# SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@172.17.0.18/ccw"
+SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+print_success(f"SQLALCHEMY_DATABASE_URL : {SQLALCHEMY_DATABASE_URL}")
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

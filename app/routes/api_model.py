@@ -319,7 +319,8 @@ async def path_post_ota_ota_remove_file(
     return {"success": True, "msg": "successfully"}
 
 
-OTA_URL = "https://local.pksofttech.org/static/ota/"
+OTA_URL = os.getenv("OTA_URL")
+print_success(f"OTA_URL : {OTA_URL}")
 
 
 @router_api.post("/ota_upload_to_devices/")
