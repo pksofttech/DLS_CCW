@@ -234,6 +234,9 @@ async def path_post_device_set_config(
     price_rate_02: int = Form(...),
     price_rate_03: int = Form(...),
     price_rate_04: int = Form(...),
+    price_rate_05: int = Form(0),
+    price_rate_06: int = Form(0),
+    price_rate_07: int = Form(0),
 ):
     if id:
         _device: Device = db.exec(select(Device).where(Device.id == id)).one_or_none()
@@ -247,19 +250,28 @@ async def path_post_device_set_config(
         if price_rate_01 > 60 or price_rate_02 > 60 or price_rate_03 > 60 or price_rate_04 > 60:
             return {"success": False, "msg": "data is not available"}
 
-        price_rates = str(price_rate_01).zfill(2) + str(price_rate_02).zfill(2) + str(price_rate_03).zfill(2) + str(price_rate_04).zfill(2)
+        price_rates = (
+            str(price_rate_01).zfill(2)
+            + str(price_rate_02).zfill(2)
+            + str(price_rate_03).zfill(2)
+            + str(price_rate_04).zfill(2)
+            + str(price_rate_05).zfill(2)
+            + str(price_rate_06).zfill(2)
+            + str(price_rate_07).zfill(2)
+        )
 
         _device.price_rates = price_rates
         try:
             publish: str = f"/config/{_device.sn}"
             d = {
-                "setup": "on",
+                "cmd": "fntime",
                 "fn1": str(price_rate_01),
                 "fn2": str(price_rate_02),
                 "fn3": str(price_rate_03),
                 "fn4": str(price_rate_04),
-                "fn5": str(0),
-                "fn6": str(0),
+                "fn5": str(price_rate_05),
+                "fn6": str(price_rate_06),
+                "fn7": str(price_rate_07),
             }
             msg_json = json.dumps(d)
             print(publish)

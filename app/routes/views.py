@@ -116,12 +116,20 @@ async def router_project(
         owners = ["ME"]
         projects = db.query(Project).where(Project.system_user_id == user.id).order_by(Project.id).all()
 
+    # print(projects)
+    device_count = []
+    for project in projects:
+        _c = db.exec(select([func.count(Device.id)]).where(Device.project_id == project.id)).one()
+        # print(_c)
+        device_count.append(_c)
+    print(device_count)
     return templates.TemplateResponse(
         "project.html",
         {
             "request": {},
             "user": user,
             "projects": projects,
+            "device_count": device_count,
             "now": _now,
             "owners": owners,
         },
