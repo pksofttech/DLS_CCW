@@ -253,23 +253,32 @@ async def router_device(
 async def router_dashboard_device(
     db: Session = Depends(create_session),
     user: System_User = Depends(access_cookie_token),
-    bank_id: int = None,
-    device_id: int = None,
+    id: int = None,
 ):
     if not user:
         return RedirectResponse(url="/")
     if user.status.lower() == "disable":
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
-    devices = range(4)
-    devices_off = range(2)
+    device: Device = db.query(Device).where(Device.id == id).one_or_none()
+    str_price_rates = device.price_rates
+    price_rates = str_price_rates.split(",")
+    p01 = price_rates[0]
+    price_rate_01 = [
+        p01[0:2],
+        p01[2:4],
+        p01[4:6],
+        p01[6:8],
+    ]
+
+    print(price_rate_01)
     return templates.TemplateResponse(
         "dashboard_device.html",
         {
             "request": {},
             "user": user,
-            "devices": devices,
-            "devices_off": devices_off,
+            "device": device,
+            "price_rate": price_rate_01,
             "now": _now,
         },
     )

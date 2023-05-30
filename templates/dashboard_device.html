@@ -15,15 +15,6 @@
                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text">Status of devices</span>
-                    <span class="info-box-content">
-                        <div class="form-group">
-                            <select class="form-control" style="width: 100%;" aria-hidden="true" onchange="on_select_device_chang(this.value)">
-                                <option selected="selected">car wash 01</option>
-                                <option>car wash 02</option>
-                                <option>car wash 03</option>
-                            </select>
-                        </div>
-                    </span>
                 </div>
 
             </div>
@@ -31,7 +22,8 @@
                 <div class="col-sm-6">
                     <div class="card card-warning">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-gear"></i> Setting Device <span id="device_info_name_setting">car wash 01</span></h3>
+                            <h3 class="card-title"><i class="fa fa-gear"></i> Setting Device <span id="device_info_name_setting">{{device.name}} (sn:{{device.sn}})</span></h3>
+
                         </div>
 
                         <div class="card-body">
@@ -109,28 +101,32 @@
                                     </div>
                                     <div class="card-body text-center text-sm">
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการฉีดน้ำ <output name="rate_01">10</output> (วินาที/บาท) </label>
-                                            <input type="range" class="custom-range custom-range-success" min="1" max="60" value="10" oninput="rate_01.value = this.value">
+                                            <label>ค่าบริการฉีดน้ำ <output name="rate_01">{{price_rate[0]}}</output> (วินาที/บาท) </label>
+                                            <input id="price_rate_01" type="range" class="custom-range custom-range-success" min="1" max="60" value={{price_rate[0]}}
+                                                oninput="rate_01.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการฉีดโฟม <output name="rate_02">10</output> (วินาที/บาท) </label>
-                                            <input type="range" class="custom-range custom-range-warning" min="1" max="60" value="10" oninput="rate_02.value = this.value">
+                                            <label>ค่าบริการฉีดโฟม <output name="rate_02">{{price_rate[1]}}</output> (วินาที/บาท) </label>
+                                            <input id="price_rate_02" type="range" class="custom-range custom-range-warning" min="1" max="60" value={{price_rate[1]}}
+                                                oninput="rate_02.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการเป่าลม <output name="rate_03">10</output> (วินาที/บาท) </label>
-                                            <input type="range" class="custom-range custom-range-info" min="1" max="60" value="10" oninput="rate_03.value = this.value">
+                                            <label>ค่าบริการเป่าลม <output name="rate_03">{{price_rate[2]}}</output> (วินาที/บาท) </label>
+                                            <input id="price_rate_03" type="range" class="custom-range custom-range-info" min="1" max="60" value={{price_rate[2]}}
+                                                oninput="rate_03.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการน้ำประปา <output name="rate_04">10</output> (วินาที/บาท) </label>
-                                            <input type="range" class="custom-range custom-range-danger" min="1" max="60" value="10" oninput="rate_04.value = this.value">
+                                            <label>ค่าบริการน้ำประปา <output name="rate_04">{{price_rate[3]}}</output> (วินาที/บาท) </label>
+                                            <input id="price_rate_04" type="range" class="custom-range custom-range-danger" min="1" max="60" value={{price_rate[3]}}
+                                                oninput="rate_04.value = this.value">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="card card-secondary border rounded-lg border-warning ">
+                                <!-- <div class="card card-secondary border rounded-lg border-warning ">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-9">
@@ -157,31 +153,32 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการฉีดน้ำ <output name="rate_11">10</output> (วินาที/บาท) </label>
+                                            <label >ค่าบริการฉีดน้ำ <output name="rate_11">10</output> (วินาที/บาท) </label>
                                             <input type="range" class="custom-range custom-range-success" min="1" max="60" value="10" oninput="rate_11.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการฉีดโฟม <output name="rate_12">10</output> (วินาที/บาท) </label>
+                                            <label >ค่าบริการฉีดโฟม <output name="rate_12">10</output> (วินาที/บาท) </label>
                                             <input type="range" class="custom-range custom-range-warning" min="1" max="60" value="10" oninput="rate_12.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการเป่าลม <output name="rate_13">10</output> (วินาที/บาท) </label>
+                                            <label >ค่าบริการเป่าลม <output name="rate_13">10</output> (วินาที/บาท) </label>
                                             <input type="range" class="custom-range custom-range-info" min="1" max="60" value="10" oninput="rate_13.value = this.value">
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="customRange4">ค่าบริการน้ำประปา <output name="rate_14">10</output> (วินาที/บาท) </label>
+                                            <label >ค่าบริการน้ำประปา <output name="rate_14">10</output> (วินาที/บาท) </label>
                                             <input type="range" class="custom-range custom-range-danger" min="1" max="60" value="10" oninput="rate_14.value = this.value">
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
 
 
                                 <div class="form-group mt-2">
-                                    <button type="button" class="btn btn-outline-danger btn-block btn-lg" onclick="apply_setting_device()"><i class="fa fa-gear"></i>
+                                    <button type="button" class="btn btn-outline-danger btn-block btn-lg" onclick="apply_setting_device('{{device.id}}');"><i
+                                            class="fa fa-gear"></i>
                                         ตั้งค่าระบบ</button>
                                 </div>
 
@@ -194,7 +191,7 @@
                     <div class="card card-info">
                         <div class="card-header">
                             <h3 class="card-title"><i class="fa fa-circle-info"></i>
-                                <span id="device_info_name">car wash 01</span>
+                                <span id="device_info_name">{{device.name}}</span>
                             </h3>
                         </div>
 
@@ -232,8 +229,8 @@
 
     }
 
-    function apply_setting_device() {
-        Swal.fire({
+    async function apply_setting_device(device_id) {
+        const result = await Swal.fire({
             title: 'Are you sure?',
             text: "กรุณายืนยันการปรับตั้งค่า!",
             icon: 'warning',
@@ -241,15 +238,45 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, (ตกลง)!'
-        }).then((result) => {
+        });
+        if (result.isConfirmed) {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Success!',
-                    'ระะบบดำเนินการปรับตั้งค่าใหม่แล้วจะมีผลเมื่อตู้ดำเนินการ sync ข้อมูลกับระบบ\nโดยปกติจะมีผลภายใน 60 วินาที',
-                    'success'
-                )
+                const price_rate_01 = document.getElementById("price_rate_01").value;
+                const price_rate_02 = document.getElementById("price_rate_02").value;
+                const price_rate_03 = document.getElementById("price_rate_03").value;
+                const price_rate_04 = document.getElementById("price_rate_04").value;
+
+                const formData = new FormData();
+                formData.append("id", device_id);
+                formData.append("price_rate_01", price_rate_01);
+                formData.append("price_rate_02", price_rate_02);
+                formData.append("price_rate_03", price_rate_03);
+                formData.append("price_rate_04", price_rate_04);
+
+                const _reply = await fetchApi("/api_model/device_set_config/", "post", formData, "json");
+                if (_reply.success) {
+                    //Swal.fire(
+                    //    'Success!',
+                    //    'ระะบบดำเนินการลบข้อมูลเรียบร้อยแล้ว',
+                    //    'success'
+                    //);
+                    //window.location.reload();
+                    Swal.fire(
+                        'Success!',
+                        'ระะบบดำเนินการปรับตั้งค่าใหม่แล้วจะมีผลเมื่อตู้ดำเนินการ sync ข้อมูลกับระบบ\nโดยปกติจะมีผลภายใน 60 วินาที',
+                        'success'
+                    )
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "unsuccessful",
+                        html: _reply.msg,
+                    });
+                }
             }
-        })
+
+        }
+
     }
 </script>
 

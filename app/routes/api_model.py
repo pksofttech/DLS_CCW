@@ -163,7 +163,7 @@ async def path_get_device(
 
 
 @router_api.post("/device/")
-async def path_post_project(
+async def path_post_device(
     user: System_User = Depends(get_current_user),
     db: Session = Depends(create_session),
     device_name: str = Form(...),
@@ -221,6 +221,57 @@ async def path_post_project(
         db.add(_device)
         db.commit()
         db.refresh(_device)
+
+    return {"success": True, "msg": "successfully"}
+
+
+@router_api.post("/device_set_config/")
+async def path_post_device_set_config(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+    id: int = Form(default=None),
+    price_rate_01: int = Form(...),
+    price_rate_02: int = Form(...),
+    price_rate_03: int = Form(...),
+    price_rate_04: int = Form(...),
+):
+    if id:
+        _device: Device = db.exec(select(Device).where(Device.id == id)).one_or_none()
+
+        if not _device:
+            return {"success": False, "msg": "item is not already in database"}
+
+        if price_rate_01 == 0 or price_rate_02 == 0 or price_rate_03 == 0 or price_rate_04 == 0:
+            return {"success": False, "msg": "data is not available"}
+
+        if price_rate_01 > 60 or price_rate_02 > 60 or price_rate_03 > 60 or price_rate_04 > 60:
+            return {"success": False, "msg": "data is not available"}
+
+        price_rates = str(price_rate_01).zfill(2) + str(price_rate_02).zfill(2) + str(price_rate_03).zfill(2) + str(price_rate_04).zfill(2)
+
+        _device.price_rates = price_rates
+        try:
+            publish: str = f"/config/{_device.sn}"
+            d = {
+                "setup": "on",
+                "fn1": str(price_rate_01),
+                "fn2": str(price_rate_02),
+                "fn3": str(price_rate_03),
+                "fn4": str(price_rate_04),
+                "fn5": str(0),
+                "fn6": str(0),
+            }
+            msg_json = json.dumps(d)
+            print(publish)
+            fast_mqtt.publish(publish, msg_json)
+            db.commit()
+            db.refresh(_device)
+            print_warning(_device)
+        except Exception as e:
+            print_error(e)
+            return {"success": False, "msg": e}
+    else:
+        return {"success": False, "msg": "Device is already in database"}
 
     return {"success": True, "msg": "successfully"}
 

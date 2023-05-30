@@ -28,6 +28,8 @@ from ..stdio import *
 # SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@47.254.250.76/ccw"
 # SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@172.17.0.18/ccw"
 SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
+if not SQLALCHEMY_DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = "postgresql://root:12341234@157.230.246.160/ccw"
 print_success(f"SQLALCHEMY_DATABASE_URL : {SQLALCHEMY_DATABASE_URL}")
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -251,7 +253,7 @@ async def set_init_database():
                 project_id=1,
                 create_by="System for test",
                 status="demo",
-                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+                price_rates="101010101010",
             )
             session.add(d)
             session.commit()
@@ -263,19 +265,19 @@ async def set_init_database():
                 project_id=1,
                 create_by="System for test",
                 status="demo",
-                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+                price_rates="101010101010",
             )
             session.add(d)
             session.commit()
             print_success(d)
 
             d = Device(
-                sn="test_001",
+                sn="m_ccw001",
                 name="ทดสอบ test_001",
                 project_id=2,
                 create_by="System for test",
                 status="demo",
-                price_rates="[{p01=5,p02=10,p03=15,p04=20}]",
+                price_rates="101010101010",
             )
             session.add(d)
             session.commit()
@@ -321,6 +323,59 @@ async def process_mqtt_data(data: dict):
                     )
                     session.add(_log_pay)
                     session.commit()
+
+                elif topic == "stats":
+                    _coin = json_msg.get("coin", 0)
+                    _bank = json_msg.get("bank", 0)
+                    _qr = json_msg.get("qr", 0)
+                    _hpwater = json_msg.get("hpwater", 0)
+                    _foam = json_msg.get("foam", 0)
+                    _air = json_msg.get("air", 0)
+                    _water = json_msg.get("water", 0)
+                    _pay = int(_coin) + int(_bank) + int(_qr)
+                    _device.count_pay += _pay
+
+                    print(_coin, _bank, _qr)
+                    if _coin:
+                        _log_pay_coin = Log_pay(
+                            time=_now,
+                            sn=sn,
+                            name=_device.name,
+                            amount=int(_coin),
+                            type="COIN",
+                            device_id=_device.id,
+                            project_id=_device.project_id,
+                        )
+                        session.add(_log_pay_coin)
+                        session.commit()
+
+                    if _bank:
+                        _log_pay_bank = Log_pay(
+                            time=_now,
+                            sn=sn,
+                            name=_device.name,
+                            amount=int(_bank),
+                            type="ธนบัตร",
+                            device_id=_device.id,
+                            project_id=_device.project_id,
+                        )
+                        session.add(_log_pay_bank)
+                        session.commit()
+
+                    if _qr:
+                        _log_pay_qr = Log_pay(
+                            time=_now,
+                            sn=sn,
+                            name=_device.name,
+                            amount=int(_qr),
+                            type="QR",
+                            device_id=_device.id,
+                            project_id=_device.project_id,
+                        )
+                        session.add(_log_pay_qr)
+                        session.commit()
+
+                    print(message)
                 else:
                     print_warning(f"Warning {topic} is not implemented")
 

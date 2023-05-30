@@ -21,9 +21,10 @@ fast_mqtt = FastMQTT(
 
 @fast_mqtt.on_connect()
 def connect(client, flags, rc, properties):
-    fast_mqtt.client.subscribe("/info/#")  # subscribing mqtt topic
-    fast_mqtt.client.subscribe("/getmoney/#")  # subscribing mqtt topic
-    fast_mqtt.client.subscribe("/heartbeat/#")  # subscribing mqtt topic
+    fast_mqtt.client.subscribe("/info/#")
+    fast_mqtt.client.subscribe("/getmoney/#")
+    fast_mqtt.client.subscribe("/heartbeat/#")
+    fast_mqtt.client.subscribe("/stats/#")
     print_success("Connected: ", flags, rc, properties)
 
 
