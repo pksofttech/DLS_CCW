@@ -272,11 +272,16 @@ async def router_dashboard_device(
     str_price_rates = device.price_rates
     price_rates = str_price_rates.split(",")
     p01 = price_rates[0]
+    if len(p01) <= 15:
+        p01 = p01.ljust(15, "0")
     price_rate_01 = [
         p01[0:2],
         p01[2:4],
         p01[4:6],
         p01[6:8],
+        p01[8:10],
+        p01[10:12],
+        p01[12:15],
     ]
 
     print(price_rate_01)

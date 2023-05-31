@@ -210,13 +210,7 @@ async def path_post_device(
                 if _project.system_user_id != user.id:
                     return {"success": False, "msg": "Project is already in user permitted"}
 
-        _device = Device(
-            name=device_name,
-            sn=device_sn,
-            createDate=time_now(),
-            create_by=user.username,
-            project_id=_project.id,
-        )
+        _device = Device(name=device_name, sn=device_sn, createDate=time_now(), create_by=user.username, project_id=_project.id, price_rates="20202020202060")
         print_success(_device)
         db.add(_device)
         db.commit()
@@ -257,7 +251,7 @@ async def path_post_device_set_config(
             + str(price_rate_04).zfill(2)
             + str(price_rate_05).zfill(2)
             + str(price_rate_06).zfill(2)
-            + str(price_rate_07).zfill(2)
+            + str(price_rate_07).zfill(3)
         )
 
         _device.price_rates = price_rates
