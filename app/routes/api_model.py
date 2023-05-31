@@ -234,9 +234,9 @@ async def path_post_device_set_config(
     price_rate_02: int = Form(...),
     price_rate_03: int = Form(...),
     price_rate_04: int = Form(...),
-    price_rate_05: int = Form(0),
-    price_rate_06: int = Form(0),
-    price_rate_07: int = Form(0),
+    price_rate_05: int = Form(...),
+    price_rate_06: int = Form(...),
+    price_rate_07: int = Form(...),
 ):
     if id:
         _device: Device = db.exec(select(Device).where(Device.id == id)).one_or_none()
