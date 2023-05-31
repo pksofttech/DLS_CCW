@@ -304,6 +304,33 @@ async def path_device_reset_count(
     return {"success": True, "msg": "successfully"}
 
 
+@router_api.post("/device_restart/{id}")
+async def path_device_restart(
+    id: int,
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+):
+    _device = db.exec(select(Device).where(Device.id == id)).one_or_none()
+    if not _device:
+        return {"success": False, "msg": "item is not already in database"}
+    if user.username != "root":
+        _p = db.exec(select(Project).where(Project.id == _device.project_id)).one_or_none()
+        if _p.system_user_id != user.id:
+            return {"success": False, "msg": "item is not yours"}
+    try:
+        publish: str = f"/config/{_device.sn}"
+        d = {
+            "cmd": "reset",
+        }
+        msg_json = json.dumps(d)
+        print(publish)
+        fast_mqtt.publish(publish, msg_json)
+    except Exception as e:
+        print_error(e)
+        return {"success": False, "msg": str(e)}
+    return {"success": True, "msg": "successfully to restart devices"}
+
+
 @router_api.delete("/device/{id}")
 async def path_delete_device(
     id: int,

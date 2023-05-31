@@ -28,6 +28,11 @@
 
                         <div class="card-body">
                             <form>
+                                <div class="form-group m-2">
+                                    <button type="button" class="btn btn-outline-warning btn-block btn-lg" onclick="apply_setting_device_restart('{{device.id}}');"><i
+                                            class="fa fa-power-off"></i>
+                                        Restart</button>
+                                </div>
                                 <div class="card card-secondary border rounded-lg border-warning ">
 
                                     <div class="card-body row">
@@ -131,7 +136,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="text-gray">option 01 <output name="rate_05">{{price_rate[4]}}</output> (วินาที/บาท) </label>
+                                            <label class="text-gray">ค่าบริการดูดฝุ่น <output name="rate_05">{{price_rate[4]}}</output> (วินาที/บาท) </label>
                                             <input id="price_rate_05" type="range" class="custom-range custom-range-gray" min="1" max="60" value={{price_rate[4]}}
                                                 oninput="rate_05.value = this.value">
                                         </div>
@@ -143,7 +148,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="text-gray">option 03 <output name="rate_07">{{price_rate[6]}}</output> (วินาที/บาท) </label>
+                                            <label class="text-gray">parked time out(***) <output name="rate_07">{{price_rate[6]}}</output> (วินาที/บาท) </label>
                                             <input id="price_rate_07" type="range" class="custom-range custom-range-gray" min="1" max="600" value={{price_rate[6]}}
                                                 oninput="rate_07.value = this.value">
                                         </div>
@@ -286,12 +291,7 @@
 
                 const _reply = await fetchApi("/api_model/device_set_config/", "post", formData, "json");
                 if (_reply.success) {
-                    //Swal.fire(
-                    //    'Success!',
-                    //    'ระะบบดำเนินการลบข้อมูลเรียบร้อยแล้ว',
-                    //    'success'
-                    //);
-                    //window.location.reload();
+
                     Swal.fire(
                         'Success!',
                         'ระะบบดำเนินการปรับตั้งค่าใหม่แล้วจะมีผลเมื่อตู้ดำเนินการ sync ข้อมูลกับระบบ\nโดยปกติจะมีผลภายใน 60 วินาที',
@@ -332,6 +332,41 @@
         }
 
     }
+
+    async function apply_setting_device_restart(device_id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "กรุณายืนยันการ Reset Device!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, (ตกลง)!'
+        });
+        if (result.isConfirmed) {
+            if (result.isConfirmed) {
+
+                const _reply = await fetchApi("/api_model/device_restart/" + device_id, "post", null, "json");
+                if (_reply.success) {
+
+                    Swal.fire(
+                        'Success!',
+                        _reply.msg,
+                        'success'
+                    )
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "unsuccessful",
+                        html: _reply.msg,
+                    });
+                }
+            }
+
+        }
+
+    }
+
 
 </script>
 
