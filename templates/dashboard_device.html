@@ -62,7 +62,7 @@
                                                 </div>
 
                                                 <div class="card-footer">
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="apply_setting_device('{{device.id}}');"><i
+                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="apply_setting_device_time('{{device.id}}');"><i
                                                             class="fa fa-gear"></i>
                                                         ตั้งค่าระบบ</button>
                                                 </div>
@@ -75,28 +75,28 @@
 
                                             <div class="form-group">
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-success">
-                                                    <input type="checkbox" disabled checked class="custom-control-input">
-                                                    <label class="custom-control-label">Machine Active</label>
+                                                    <input type="checkbox" {%if device_status[0]%} checked {% endif %} id="machine_active" class="custom-control-input">
+                                                    <label class="custom-control-label" for="machine_active">Machine Active</label>
                                                 </div>
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-success">
-                                                    <input type="checkbox" disabled checked class="custom-control-input">
-                                                    <label class="custom-control-label">Muti Mode</label>
+                                                    <input type="checkbox" {%if device_status[1]%} checked {% endif %} id="multi_mode" class="custom-control-input">
+                                                    <label class="custom-control-label" for="multi_mode">Multi Mode</label>
                                                 </div>
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" disabled checked class="custom-control-input">
-                                                    <label class="custom-control-label">เปิดรับ ธนบัตร</label>
+                                                    <input type="checkbox" {%if device_status[2]%} checked {% endif %} id="bill_active" class="custom-control-input">
+                                                    <label class="custom-control-label" for="bill_active">เปิดรับ ธนบัตร</label>
                                                 </div>
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" disabled checked class="custom-control-input">
-                                                    <label class="custom-control-label">เปิดรับ Coin</label>
+                                                    <input type="checkbox" {%if device_status[3]%} checked {% endif %} id="coin_active" class="custom-control-input">
+                                                    <label class="custom-control-label" for="coin_active">เปิดรับ Coin</label>
                                                 </div>
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" disabled checked class="custom-control-input">
-                                                    <label class="custom-control-label">เปิดรับ QR</label>
+                                                    <input type="checkbox" {%if device_status[4]%} checked {% endif %} id="qr_active" class="custom-control-input">
+                                                    <label class="custom-control-label" for="qr_active">เปิดรับ QR</label>
                                                 </div>
                                             </div>
                                             <div class="card-footer">
-                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="apply_setting_device('{{device.id}}');"><i
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="apply_setting_device_aciive('{{device.id}}');"><i
                                                         class="fa fa-gear"></i>
                                                     ตั้งค่าระบบ</button>
                                             </div>
@@ -310,7 +310,7 @@
 
     }
 
-    async function apply_setting_device(device_id) {
+    async function apply_setting_device_time(device_id) {
         const result = await Swal.fire({
             title: 'Are you sure?',
             text: "กรุณายืนยันการปรับตั้งค่า!",
@@ -324,9 +324,60 @@
             if (result.isConfirmed) {
                 Swal.fire(
                     'info!',
-                    'Function is not avalable',
+                    'Function is not avalable apply_setting_device_time',
                     'info'
                 )
+            }
+
+        }
+
+    }
+
+
+    async function apply_setting_device_aciive(device_id) {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "กรุณายืนยันการปรับตั้งค่า!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, (ตกลง)!'
+        });
+        if (result.isConfirmed) {
+            if (result.isConfirmed) {
+                const op01 = document.getElementById("machine_active").checked;
+                const op02 = document.getElementById("multi_mode").checked;
+                const op03 = document.getElementById("bill_active").checked;
+                const op04 = document.getElementById("coin_active").checked;
+                const op05 = document.getElementById("qr_active").checked;
+
+
+                const formData = new FormData();
+                formData.append("id", device_id);
+                formData.append("op01", op01);
+                formData.append("op02", op02);
+                formData.append("op03", op03);
+                formData.append("op04", op04);
+                formData.append("op05", op05);
+
+
+
+                const _reply = await fetchApi("/api_model/device_set_active/", "post", formData, "json");
+                if (_reply.success) {
+
+                    Swal.fire(
+                        'Success!',
+                        _reply.msg,
+                        'success'
+                    )
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "unsuccessful",
+                        html: _reply.msg,
+                    });
+                }
             }
 
         }

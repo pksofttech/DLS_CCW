@@ -282,6 +282,58 @@ async def path_post_device_set_config(
     return {"success": True, "msg": "successfully"}
 
 
+@router_api.post("/device_set_active/")
+async def path_post_device_set_active(
+    user: System_User = Depends(get_current_user),
+    db: Session = Depends(create_session),
+    id: int = Form(default=None),
+    op01: str = Form(...),
+    op02: str = Form(...),
+    op03: str = Form(...),
+    op04: str = Form(...),
+    op05: str = Form(...),
+):
+    if id:
+        _device: Device = db.exec(select(Device).where(Device.id == id)).one_or_none()
+
+        if not _device:
+            return {"success": False, "msg": "item is not already in database"}
+
+        print(op01)
+        try:
+            op01 = "1" if op01 == "true" else "0"
+            op02 = "1" if op02 == "true" else "0"
+            op03 = "1" if op03 == "true" else "0"
+            op04 = "1" if op04 == "true" else "0"
+            op05 = "1" if op05 == "true" else "0"
+            status = op01 + op02 + op03 + op04 + op05
+
+            print(status)
+
+            publish: str = f"/config/{_device.sn}"
+            d = {
+                "cmd": "setup",
+                "machineActive": True if op01 == "1" else False,
+                "multiMode": True if op02 == "1" else False,
+                "bankAccept": True if op03 == "1" else False,
+                "coinAccept": True if op04 == "1" else False,
+                "qrAccept": True if op05 == "1" else False,
+            }
+            msg_json = json.dumps(d)
+            print(publish)
+            fast_mqtt.publish(publish, msg_json)
+            _device.status = status
+            db.commit()
+            db.refresh(_device)
+        except Exception as e:
+            print_error(e)
+            return {"success": False, "msg": e}
+    else:
+        return {"success": False, "msg": "Device is already in database"}
+
+    return {"success": True, "msg": "successfully"}
+
+
 @router_api.post("/device_reset_count/{id}")
 async def path_device_reset_count(
     id: int,

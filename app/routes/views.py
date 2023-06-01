@@ -269,6 +269,13 @@ async def router_dashboard_device(
         return templates.TemplateResponse("disable_user.html", {"request": {}, "user": user})
     _now = time_now()
     device: Device = db.query(Device).where(Device.id == id).one_or_none()
+
+    if not device:
+        return f"dashboard_device is not installed"
+    if len(device.status) != 5:
+        device.status = "11111"
+        db.commit()
+        db.refresh(device)
     str_price_rates = device.price_rates
     price_rates = str_price_rates.split(",")
     p01 = price_rates[0]
@@ -283,8 +290,16 @@ async def router_dashboard_device(
         p01[10:12],
         p01[12:15],
     ]
+    _d_s = device.status
+    device_status = [
+        int(_d_s[0:1]),
+        int(_d_s[1:2]),
+        int(_d_s[2:3]),
+        int(_d_s[3:4]),
+        int(_d_s[4:5]),
+    ]
 
-    print(price_rate_01)
+    print(device_status)
     return templates.TemplateResponse(
         "dashboard_device.html",
         {
@@ -292,6 +307,7 @@ async def router_dashboard_device(
             "user": user,
             "device": device,
             "price_rate": price_rate_01,
+            "device_status": device_status,
             "now": _now,
         },
     )
