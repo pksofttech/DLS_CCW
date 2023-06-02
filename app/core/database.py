@@ -171,7 +171,7 @@ from .auth import get_password_hash
 
 
 async def set_init_database():
-    # return
+    return
     print_success("set_init_database")
 
     with Session(engine) as session:

@@ -11,14 +11,14 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from PIL import Image
-from sqlmodel import Session, func, join, or_, select
+from sqlmodel import Session, func, join, or_, select, delete, update
 
 from app.core import config
 from app.core.auth import access_cookie_token, get_current_user, get_password_hash
 
 # from sqlalchemy import or_
 # from sqlalchemy.orm import Session
-from app.core.database import Project, System_User, Device, create_session
+from app.core.database import Log_pay, Project, System_User, Device, create_session
 from app.service.mqtt import fast_mqtt
 
 from ..stdio import *
@@ -349,6 +349,10 @@ async def path_device_reset_count(
             return {"success": False, "msg": "item is not yours"}
     try:
         _device.count_pay = 0
+        db.commit()
+        sql = delete(Log_pay).where(Log_pay.device_id == _device.id)
+        row = db.exec(sql)
+        print(row)
         db.commit()
     except Exception as e:
         print_error(e)
