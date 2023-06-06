@@ -37,7 +37,7 @@
 
                                     <div class="card-body row">
                                         <div class="col-sm-6 border rounded-lg p-2">
-                                            <div class="card card-danger">
+                                            <div class="card card-secondary text-secondary">
                                                 <div class="card-header">
                                                     <h6>เปิดบริการตามช่วงเวลา</h6>
                                                 </div>
@@ -62,7 +62,7 @@
                                                 </div>
 
                                                 <div class="card-footer">
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="apply_setting_device_time('{{device.id}}');"><i
+                                                    <button type="button" disabled class="btn btn-outline-secondary btn-sm" onclick="apply_setting_device_time('{{device.id}}');"><i
                                                             class="fa fa-gear"></i>
                                                         ตั้งค่าระบบ</button>
                                                 </div>
@@ -74,24 +74,24 @@
                                         <div class="col-sm-6 border rounded-lg p-2">
 
                                             <div class="form-group">
-                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-success">
-                                                    <input type="checkbox" {%if device_status[0]%} checked {% endif %} id="machine_active" class="custom-control-input">
+                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-secondary">
+                                                    <input disabled type="checkbox" {%if device_status[0]%} checked {% endif %} id="machine_active" class="custom-control-input">
                                                     <label class="custom-control-label" for="machine_active">Machine Active</label>
                                                 </div>
                                                 <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-success">
                                                     <input type="checkbox" {%if device_status[1]%} checked {% endif %} id="multi_mode" class="custom-control-input">
                                                     <label class="custom-control-label" for="multi_mode">Multi Mode</label>
                                                 </div>
-                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" {%if device_status[2]%} checked {% endif %} id="bill_active" class="custom-control-input">
+                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-secondary">
+                                                    <input disabled type="checkbox" {%if device_status[2]%} checked {% endif %} id="bill_active" class="custom-control-input">
                                                     <label class="custom-control-label" for="bill_active">เปิดรับ ธนบัตร</label>
                                                 </div>
-                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" {%if device_status[3]%} checked {% endif %} id="coin_active" class="custom-control-input">
+                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-secondary">
+                                                    <input disabled type="checkbox" {%if device_status[3]%} checked {% endif %} id="coin_active" class="custom-control-input">
                                                     <label class="custom-control-label" for="coin_active">เปิดรับ Coin</label>
                                                 </div>
-                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-danger">
-                                                    <input type="checkbox" {%if device_status[4]%} checked {% endif %} id="qr_active" class="custom-control-input">
+                                                <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-secondary">
+                                                    <input disabled type="checkbox" {%if device_status[4]%} checked {% endif %} id="qr_active" class="custom-control-input">
                                                     <label class="custom-control-label" for="qr_active">เปิดรับ QR</label>
                                                 </div>
                                             </div>
