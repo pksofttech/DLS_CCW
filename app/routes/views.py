@@ -186,7 +186,7 @@ async def router_device(
     project_name = []
     if project_id:
         project_name = db.query(Project.name).where(Project.id == project_id).one()
-        devices = db.query(Device).where(Device.project_id == project_id).all()
+        devices = db.query(Device).where(Device.project_id == project_id).order_by(Device.sn).all()
     else:
         if user.username == "root":
             project_ids = db.query(Project.id, Project.name).order_by(Project.id).all()
