@@ -167,7 +167,7 @@ async def router_dashboard(
 
 import random
 
-TIME_OUT_HEARTBEAT = 6000
+TIME_OUT_HEARTBEAT = 60 * 10
 
 
 @router_page.get("/device", tags=["public"])
