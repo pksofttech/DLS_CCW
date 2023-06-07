@@ -209,7 +209,7 @@ async def router_device(
         _ts_now = int(round(_now.timestamp()))
         last_heart_beat = d.last_heart_beat + timedelta(hours=7)
 
-        diff_of_heartbeat = _ts_now - last_heart_beat.timestamp()
+        diff_of_heartbeat = _ts_now - int(round(d.last_heart_beat.timestamp()))
         print(diff_of_heartbeat)
         # print(d)
         # ? Chack Time_out is device active
