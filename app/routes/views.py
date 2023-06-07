@@ -196,7 +196,7 @@ async def router_device(
         for project_id in project_ids:
             # print_warning(project_id[1])
             project_name.append(project_id[1])
-            ds = db.query(Device).where(Device.project_id == project_id[0]).order_by(Device.id).all()
+            ds = db.query(Device).where(Device.project_id == project_id[0]).order_by(Device.sn).all()
             for d in ds:
                 devices.append(d)
 
