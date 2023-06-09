@@ -10,12 +10,13 @@ _mqtt_host = "47.254.250.76"
 # _mqtt_host = "mqtt.dollysolution.com"
 _mqtt_port = 1883
 fast_mqtt = FastMQTT(
+    # client_id="localhost_test",
     config=MQTTConfig(
         host=_mqtt_host,
         username="admin",
         password="dls@1234",
         # port=_mqtt_port,
-    )
+    ),
 )
 
 
@@ -32,6 +33,10 @@ def connect(client, flags, rc, properties):
 async def message(client, topic: str, payload, qos, properties):
     start_time = time.perf_counter()
     try:
+        retain = properties.get("retain", 0)
+        if retain:
+            print_warning(f"Ignore Retain : is {topic}: {payload}")
+            return 0
         mqtt_msg = payload.decode()
         json_msg = json.loads(mqtt_msg)
 
