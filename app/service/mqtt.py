@@ -7,7 +7,7 @@ from ..stdio import *
 import httpx as requests
 
 _mqtt_host = "47.254.250.76"
-# _mqtt_host = "mqtt.dollysolution.com"
+# _mqtt_host = "mqtt.dollysolutions.com"
 _mqtt_port = 1883
 fast_mqtt = FastMQTT(
     # client_id="localhost_test",
@@ -15,6 +15,7 @@ fast_mqtt = FastMQTT(
         host=_mqtt_host,
         username="admin",
         password="dls@1234",
+        # keepalive=600,
         # port=_mqtt_port,
     ),
 )
@@ -70,7 +71,8 @@ async def message(client, topic: str, payload, qos, properties):
 
 @fast_mqtt.on_disconnect()
 def disconnect(client, packet, exc=None):
-    print_success("Disconnected")
+    print_warning(f"Disconnecting client:{client} packet {packet}")
+    print_warning("Disconnected")
 
 
 @fast_mqtt.on_subscribe()

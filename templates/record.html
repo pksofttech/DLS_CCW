@@ -114,6 +114,12 @@
 			{
 				data: "time",
 				title: "วัน-เวลา",
+				name: "time",
+				render: function (data, type) {
+					const _date = moment(data, "YYYY-MM-DDTHH:mm:ss").add(7, 'hours');
+					debug(data + " : " + _date)
+					return String(_date);
+				},
 			},
 			{
 				data: "amount",
@@ -133,7 +139,6 @@
 		let data_table_view = $("#table_log_pay_record").DataTable({
 			dom: "Bfrtipl",
 			buttons: [
-				"csv",
 				"excel",
 				"print",
 				"colvis",

@@ -44,7 +44,7 @@ if (DEBUG_MODE) {
 }
 
 function dateTimeToStr(dateTime, format = "YYYY/MM/DD HH:mm:ss") {
-    // debug(dateTime)
+    debug(dateTime);
     return moment(dateTime).format(format);
 }
 

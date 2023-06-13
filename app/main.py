@@ -58,17 +58,17 @@ from app.service.mqtt import fast_mqtt
 @app.on_event("startup")
 @repeat_every(seconds=60 * 60)
 async def scheduler_task():
+    pass
     # with Session(engine) as session:
     #     statement = select(System_User).where(System_User.username == "root")
     #     _root: System_User = session.exec(statement).one_or_none()
     #     print_success(_root)
-    fast_mqtt.client.publish
-    publish: str = "/time_stamp"
-    mqtt_msg = {"id": "ccw_server", "msg": f"time_stamp:{time_now().timestamp()}"}
-    msg_json = json.dumps(mqtt_msg)
-    print_warning(mqtt_msg)
-    fast_mqtt.publish(publish, msg_json)
-    print_success("@repeat_every")
+    # publish: str = "/time_stamp"
+    # mqtt_msg = {"id": "ccw_server", "msg": f"time_stamp:{time_now().timestamp()}"}
+    # msg_json = json.dumps(mqtt_msg)
+    # print_warning(mqtt_msg)
+    # fast_mqtt.publish(publish, msg_json)
+    # print_success("@repeat_every")
 
 
 @app.on_event("startup")
